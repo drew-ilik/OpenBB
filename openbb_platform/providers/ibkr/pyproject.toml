@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "openbb-template"
+name = "openbb-ibkr"
 version = "1.0.0"
-description = "Template Provider Extension for the OpenBB Platform"
-authors = ["Name <my@emailaddress.com>"]
+description = "Interactive Brokers Provider Extension for the OpenBB Platform"
+authors = ["Drew Ilik <179341198+drew-ilik@users.noreply.github.com>"]
 readme = "README.md"
 packages = [{ include = "openbb_template" }]
 
