@@ -687,7 +687,7 @@ all = ["email_validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)"
 [[package]]
 name = "fastapi-cli"
 version = "0.0.5"
-description = "Run and manage FastAPI apps from the command line with FastAPI CLI. 🚀"
+description = "Run and manage FastAPI apps from the command line with FastAPI CLI. Ã°Å¸Å¡â‚¬"
 optional = false
 python-versions = ">=3.8"
 files = [

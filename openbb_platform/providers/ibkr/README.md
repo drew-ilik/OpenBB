@@ -18,9 +18,10 @@ This project was developed with extensibility and reliability in mind, aligning 
 3. Configure TWS Settings:
    1. Enable ActiveX and Socket Clients
    2. Enable Download Open Orders on Connection
-   3. Ensure that the API port is enabled and correctly configured. The default port is usually 7496 (live) or 7497 (paper), but you can adjust this if needed.
-   4. Go to Configure > Settings > Memory Allocation and set the minimum memory allocation to 4096 MB. This avoids crashes during large data loads.
-   5. In Configuration > Lock and Exit, it is recommended to choose “Never lock Trader Workstation” and “Auto restart”.
+   3. Disable Read-Only API
+   4. Ensure that the API port is enabled and correctly configured. The default port is usually 7496 (live) or 7497 (paper), but you can adjust this if needed.
+   5. Go to Configure > Settings > Memory Allocation and set the minimum memory allocation to 4096 MB. This avoids crashes during large data loads.
+   6. In Configuration > Lock and Exit, it is recommended to choose “Never lock Trader Workstation” and “Auto restart”.
 4. Use Poetry to install the necessary dependencies for the IBKR provider:
    ```bash
    poetry install

@@ -256,7 +256,7 @@ class ROUTER_fixedincome_government(Container):
     def treasury_auctions(
         self,
         security_type: Annotated[
-            Literal["Bill", "Note", "Bond", "CMB", "TIPS", "FRN", None],
+            Optional[Literal["bill", "note", "bond", "cmb", "tips", "frn"]],
             OpenBBField(
                 description="Used to only return securities of a particular type."
             ),
@@ -300,7 +300,7 @@ class ROUTER_fixedincome_government(Container):
 
         Parameters
         ----------
-        security_type : Literal['Bill', 'Note', 'Bond', 'CMB', 'TIPS', 'FRN', None]
+        security_type : Optional[Literal['bill', 'note', 'bond', 'cmb', 'tips', 'frn']]
             Used to only return securities of a particular type.
         cusip : Optional[str]
             Filter securities by CUSIP.
@@ -598,6 +598,14 @@ class ROUTER_fixedincome_government(Container):
                     "end_date": end_date,
                 },
                 extra_params=kwargs,
+                info={
+                    "security_type": {
+                        "government_us": {
+                            "multiple_items_allowed": False,
+                            "choices": ["bill", "note", "bond", "cmb", "tips", "frn"],
+                        }
+                    }
+                },
             )
         )
 
@@ -915,7 +923,7 @@ class ROUTER_fixedincome_government(Container):
     def yield_curve(
         self,
         date: Annotated[
-            Union[str, None, List[Optional[str]]],
+            Union[datetime.date, str, None, List[Union[datetime.date, str, None]]],
             OpenBBField(
                 description="A specific date to get data for. By default is the current data. Multiple comma separated items allowed for provider(s): ecb, econdb, federal_reserve, fmp, fred."
             ),
@@ -938,7 +946,7 @@ class ROUTER_fixedincome_government(Container):
 
         Parameters
         ----------
-        date : Union[str, None, List[Optional[str]]]
+        date : Union[date, str, None, List[Union[date, str, None]]]
             A specific date to get data for. By default is the current data. Multiple comma separated items allowed for provider(s): ecb, econdb, federal_reserve, fmp, fred.
         chart : bool
             Whether to create a chart or not, by default False.

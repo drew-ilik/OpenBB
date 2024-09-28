@@ -3,11 +3,12 @@ name = "openbb-ibkr"
 version = "1.0.0"
 description = "Interactive Brokers Provider Extension for the OpenBB Platform"
 authors = ["Drew Ilik <179341198+drew-ilik@users.noreply.github.com>"]
+license = "AGPL-3.0-only"
 readme = "README.md"
-packages = [{ include = "openbb_template" }]
+packages = [{ include = "openbb_ibkr" }]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 openbb-core = "^1.1.2"
 ib_async = "^1.0.3"
 
@@ -16,4 +17,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.plugins."openbb_provider_extension"]
-template = "openbb_template:template_provider"
+ibkr = "openbb_ibkr:ibkr_provider"

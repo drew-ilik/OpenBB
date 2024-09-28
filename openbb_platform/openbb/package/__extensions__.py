@@ -52,7 +52,7 @@ Extensions:
     - finviz@1.2.2
     - fmp@1.3.2
     - fred@1.3.2
-    - imf@1.0.0b0
+    - government_us@1.3.2
     - intrinio@1.3.2
     - multpl@1.0.2
     - nasdaq@1.3.2

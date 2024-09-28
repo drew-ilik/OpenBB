@@ -761,21 +761,21 @@ class ROUTER_equity(Container):
             Current volume relative to the average. (provider: finviz)
         average_true_range : Optional[float]
             Average true range (14). (provider: finviz)
-        price_change_1_w : Optional[float]
+        price_change_1w : Optional[float]
             One-week price return. (provider: finviz)
-        price_change_1_m : Optional[float]
+        price_change_1m : Optional[float]
             One-month price return. (provider: finviz)
-        price_change_3_m : Optional[float]
+        price_change_3m : Optional[float]
             Three-month price return. (provider: finviz)
-        price_change_6_m : Optional[float]
+        price_change_6m : Optional[float]
             Six-month price return. (provider: finviz)
-        price_change_1_y : Optional[float]
+        price_change_1y : Optional[float]
             One-year price return. (provider: finviz)
         price_change_ytd : Optional[float]
             Year-to-date price return. (provider: finviz)
-        volatility_1_w : Optional[float]
+        volatility_1w : Optional[float]
             One-week volatility. (provider: finviz)
-        volatility_1_m : Optional[float]
+        volatility_1m : Optional[float]
             One-month volatility. (provider: finviz)
         year_high_percent : Optional[float]
             Percent difference from current price to the 52-week high. (provider: finviz)
@@ -819,15 +819,15 @@ class ROUTER_equity(Container):
             Price to cash ratio. (provider: finviz)
         price_to_fcf : Optional[float]
             Price to free cash flow ratio. (provider: finviz)
-        eps_growth_past_1_y : Optional[float]
+        eps_growth_past_1y : Optional[float]
             EPS growth for this year. (provider: finviz)
-        eps_growth_next_1_y : Optional[float]
+        eps_growth_next_1y : Optional[float]
             EPS growth next year. (provider: finviz)
-        eps_growth_past_5_y : Optional[float]
+        eps_growth_past_5y : Optional[float]
             EPS growth for the previous 5 years. (provider: finviz)
-        eps_growth_next_5_y : Optional[float]
+        eps_growth_next_5y : Optional[float]
             EPS growth for the next 5 years. (provider: finviz)
-        sales_growth_past_5_y : Optional[float]
+        sales_growth_past_5y : Optional[float]
             Sales growth for the previous 5 years. (provider: finviz)
         dividend_yield : Optional[float]
             Annualized dividend yield. (provider: finviz)
