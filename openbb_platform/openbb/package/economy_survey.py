@@ -174,12 +174,6 @@ class ROUTER_economy_survey(Container):
             Union[datetime.date, None, str],
             OpenBBField(description="End date of the data, in YYYY-MM-DD format."),
         ] = None,
-        chart: Annotated[
-            bool,
-            OpenBBField(
-                description="Whether to create a chart or not, by default False."
-            ),
-        ] = False,
         provider: Annotated[
             Optional[Literal["bls"]],
             OpenBBField(
@@ -198,8 +192,6 @@ class ROUTER_economy_survey(Container):
             Start date of the data, in YYYY-MM-DD format.
         end_date : Union[date, None, str]
             End date of the data, in YYYY-MM-DD format.
-        chart : bool
-            Whether to create a chart or not, by default False.
         provider : Optional[Literal['bls']]
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: bls.
         calculations : bool
@@ -276,7 +268,6 @@ class ROUTER_economy_survey(Container):
                     "end_date": end_date,
                 },
                 extra_params=kwargs,
-                chart=chart,
                 info={
                     "symbol": {"bls": {"multiple_items_allowed": True, "choices": None}}
                 },
@@ -546,7 +537,7 @@ class ROUTER_economy_survey(Container):
     def nonfarm_payrolls(
         self,
         date: Annotated[
-            Union[datetime.date, str, None, List[Union[datetime.date, str, None]]],
+            Union[str, datetime.date, None, List[Union[str, datetime.date, None]]],
             OpenBBField(
                 description="A specific date to get data for. Default is the latest report. Multiple comma separated items allowed for provider(s): fred."
             ),
@@ -563,7 +554,7 @@ class ROUTER_economy_survey(Container):
 
         Parameters
         ----------
-        date : Union[date, str, None, List[Union[date, str, None]]]
+        date : Union[str, date, None, List[Union[str, date, None]]]
             A specific date to get data for. Default is the latest report. Multiple comma separated items allowed for provider(s): fred.
         provider : Optional[Literal['fred']]
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fred.

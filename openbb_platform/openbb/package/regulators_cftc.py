@@ -41,9 +41,9 @@ class ROUTER_regulators_cftc(Container):
             OpenBBField(description="End date of the data, in YYYY-MM-DD format."),
         ] = None,
         provider: Annotated[
-            Optional[Literal["cftc", "nasdaq"]],
+            Optional[Literal["cftc"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc, nasdaq."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc."
             ),
         ] = None,
         **kwargs
@@ -58,9 +58,9 @@ class ROUTER_regulators_cftc(Container):
             Start date of the data, in YYYY-MM-DD format. Default is the most recent report.
         end_date : Union[date, None, str]
             End date of the data, in YYYY-MM-DD format.
-        provider : Optional[Literal['cftc', 'nasdaq']]
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc, nasdaq.
-        report_type : Optional[Union[Literal['legacy', 'disaggregated', 'financial', 'supplemental'], Literal['ALL', 'CHG', 'OLD', 'OTR']]]
+        provider : Optional[Literal['cftc']]
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc.
+        report_type : Literal['legacy', 'disaggregated', 'financial', 'supplemental']
             The type of report to retrieve. Set `id` as 'all' to return all items in the report
                     type (default date range returns the latest report). The Legacy report is broken down by exchange
                     with reported open interest further broken down into three trader classifications: commercial,
@@ -69,55 +69,16 @@ class ROUTER_regulators_cftc(Container):
                     into four classifications: Producer/Merchant, Swap Dealers, Managed Money and Other Reportables.
                     The Traders in Financial Futures (TFF) report includes financial contracts. The TFF report breaks
                     down the reported open interest into five classifications: Dealer, Asset Manager, Leveraged Money,
-                    Other Reportables and Non-Reportables. (provider: cftc);
-
-                    The type of report to return. Default is "ALL".
-
-                    ALL = All
-
-                    CHG = Change in Positions
-
-                    OLD = Old Crop Years
-
-                    OTR = Other Crop Years
-                     (provider: nasdaq)
+                    Other Reportables and Non-Reportables. (provider: cftc)
         futures_only : bool
             Returns the futures-only report. Default is False, for the combined report. (provider: cftc)
-        data_type : Optional[Literal['F', 'FO', 'CITS']]
-
-                    The type of data to reuturn. Default is "FO".
-
-                    F = Futures only
-
-                    FO = Futures and Options
-
-                    CITS = Commodity Index Trader Supplemental. Only valid for commodities.
-                     (provider: nasdaq)
-        legacy_format : Optional[bool]
-            Returns the legacy format of report. Default is False. (provider: nasdaq)
-        measure : Optional[Literal['CR', 'NT', 'OI', 'CHG']]
-
-                    The measure to return. Default is None.
-
-                    CR = Concentration Ratios
-
-                    NT = Number of Traders
-
-                    OI = Percent of Open Interest
-
-                    CHG = Change in Positions. Only valid when data_type is "CITS".
-                     (provider: nasdaq)
-        transform : Literal['diff', 'rdiff', 'cumul', 'normalize', None]
-            Transform the data as difference, percent change, cumulative, or normalize. (provider: nasdaq)
-        collapse : Literal['daily', 'weekly', 'monthly', 'quarterly', 'annual', None]
-            Collapse the frequency of the time series. (provider: nasdaq)
 
         Returns
         -------
         OBBject
             results : List[COT]
                 Serializable results.
-            provider : Optional[Literal['cftc', 'nasdaq']]
+            provider : Optional[Literal['cftc']]
                 Provider name.
             warnings : Optional[List[Warning_]]
                 List of warnings.
@@ -181,7 +142,7 @@ class ROUTER_regulators_cftc(Container):
                     "provider": self._get_provider(
                         provider,
                         "regulators.cftc.cot",
-                        ("cftc", "nasdaq"),
+                        ("cftc",),
                     )
                 },
                 standard_params={
@@ -212,9 +173,9 @@ class ROUTER_regulators_cftc(Container):
         self,
         query: Annotated[str, OpenBBField(description="Search query.")] = "",
         provider: Annotated[
-            Optional[Literal["cftc", "nasdaq"]],
+            Optional[Literal["cftc"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc, nasdaq."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc."
             ),
         ] = None,
         **kwargs
@@ -228,15 +189,15 @@ class ROUTER_regulators_cftc(Container):
         ----------
         query : str
             Search query.
-        provider : Optional[Literal['cftc', 'nasdaq']]
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc, nasdaq.
+        provider : Optional[Literal['cftc']]
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cftc.
 
         Returns
         -------
         OBBject
             results : List[COTSearch]
                 Serializable results.
-            provider : Optional[Literal['cftc', 'nasdaq']]
+            provider : Optional[Literal['cftc']]
                 Provider name.
             warnings : Optional[List[Warning_]]
                 List of warnings.
@@ -276,7 +237,7 @@ class ROUTER_regulators_cftc(Container):
                     "provider": self._get_provider(
                         provider,
                         "regulators.cftc.cot_search",
-                        ("cftc", "nasdaq"),
+                        ("cftc",),
                     )
                 },
                 standard_params={

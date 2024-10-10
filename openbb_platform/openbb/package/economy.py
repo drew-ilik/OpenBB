@@ -2673,67 +2673,40 @@ class ROUTER_economy(Container):
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fred, intrinio.
         frequency : Optional[Literal['a', 'q', 'm', 'w', 'd', 'wef', 'weth', 'wew', 'wetu', 'wem', 'wesu', 'wesa', 'bwew', 'bwem']]
             Frequency aggregation to convert high frequency data to lower frequency.
-
-            None = No change
-
-            a = Annual
-
-            q = Quarterly
-
-            m = Monthly
-
-            w = Weekly
-
-            d = Daily
-
-            wef = Weekly, Ending Friday
-
-            weth = Weekly, Ending Thursday
-
-            wew = Weekly, Ending Wednesday
-
-            wetu = Weekly, Ending Tuesday
-
-            wem = Weekly, Ending Monday
-
-            wesu = Weekly, Ending Sunday
-
-            wesa = Weekly, Ending Saturday
-
-            bwew = Biweekly, Ending Wednesday
-
-            bwem = Biweekly, Ending Monday
+                None = No change
+                a = Annual
+                q = Quarterly
+                m = Monthly
+                w = Weekly
+                d = Daily
+                wef = Weekly, Ending Friday
+                weth = Weekly, Ending Thursday
+                wew = Weekly, Ending Wednesday
+                wetu = Weekly, Ending Tuesday
+                wem = Weekly, Ending Monday
+                wesu = Weekly, Ending Sunday
+                wesa = Weekly, Ending Saturday
+                bwew = Biweekly, Ending Wednesday
+                bwem = Biweekly, Ending Monday
                  (provider: fred)
         aggregation_method : Optional[Literal['avg', 'sum', 'eop']]
             A key that indicates the aggregation method used for frequency aggregation.
                 This parameter has no affect if the frequency parameter is not set.
-
-            avg = Average
-
-            sum = Sum
-
-            eop = End of Period
+                avg = Average
+                sum = Sum
+                eop = End of Period
                  (provider: fred)
         transform : Optional[Literal['chg', 'ch1', 'pch', 'pc1', 'pca', 'cch', 'cca', 'log']]
             Transformation type
-
-            None = No transformation
-
-            chg = Change
-
-            ch1 = Change from Year Ago
-
-            pch = Percent Change
-
-            pc1 = Percent Change from Year Ago
-
-            pca = Compounded Annual Rate of Change
-
-            cch = Continuously Compounded Rate of Change
-
-            cca = Continuously Compounded Annual Rate of Change
-
-            log = Natural Log
+                None = No transformation
+                chg = Change
+                ch1 = Change from Year Ago
+                pch = Percent Change
+                pc1 = Percent Change from Year Ago
+                pca = Compounded Annual Rate of Change
+                cch = Continuously Compounded Rate of Change
+                cca = Continuously Compounded Annual Rate of Change
+                log = Natural Log
                  (provider: fred)
         all_pages : Optional[bool]
             Returns all pages of data from the API call at once. (provider: intrinio)
@@ -2795,7 +2768,49 @@ class ROUTER_economy(Container):
                 info={
                     "symbol": {
                         "fred": {"multiple_items_allowed": True, "choices": None}
-                    }
+                    },
+                    "frequency": {
+                        "fred": {
+                            "multiple_items_allowed": False,
+                            "choices": [
+                                "a",
+                                "q",
+                                "m",
+                                "w",
+                                "d",
+                                "wef",
+                                "weth",
+                                "wew",
+                                "wetu",
+                                "wem",
+                                "wesu",
+                                "wesa",
+                                "bwew",
+                                "bwem",
+                            ],
+                        }
+                    },
+                    "aggregation_method": {
+                        "fred": {
+                            "multiple_items_allowed": False,
+                            "choices": ["avg", "sum", "eop"],
+                        }
+                    },
+                    "transform": {
+                        "fred": {
+                            "multiple_items_allowed": False,
+                            "choices": [
+                                "chg",
+                                "ch1",
+                                "pch",
+                                "pc1",
+                                "pca",
+                                "cch",
+                                "cca",
+                                "log",
+                            ],
+                        }
+                    },
                 },
             )
         )

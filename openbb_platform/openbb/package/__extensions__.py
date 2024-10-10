@@ -12,61 +12,42 @@ Routers:
     /crypto
     /currency
     /derivatives
-    /econometrics
     /economy
     /equity
     /etf
     /fixedincome
     /index
     /news
-    /quantitative
     /regulators
-    /technical
 
 Extensions:
-    - commodity@1.2.2
-    - crypto@1.3.2
-    - currency@1.3.2
-    - derivatives@1.3.2
-    - econometrics@1.4.2
-    - economy@1.3.2
-    - equity@1.3.2
-    - etf@1.3.2
-    - fixedincome@1.3.2
-    - index@1.3.2
-    - news@1.3.2
-    - quantitative@1.3.2
-    - regulators@1.3.2
-    - technical@1.3.2
+    - commodity@1.2.3
+    - crypto@1.3.3
+    - currency@1.3.3
+    - derivatives@1.3.3
+    - economy@1.3.3
+    - equity@1.3.3
+    - etf@1.3.3
+    - fixedincome@1.3.3
+    - index@1.3.3
+    - news@1.3.3
+    - regulators@1.3.3
 
-    - alpha_vantage@1.3.2
-    - benzinga@1.3.2
-    - biztoc@1.3.2
-    - bls@1.0.0
-    - cboe@1.3.2
-    - cftc@1.0.0
-    - ecb@1.3.2
-    - econdb@1.2.2
-    - federal_reserve@1.3.2
-    - finra@1.3.2
-    - finviz@1.2.2
-    - fmp@1.3.2
-    - fred@1.3.2
-    - government_us@1.3.2
-    - intrinio@1.3.2
-    - multpl@1.0.2
-    - nasdaq@1.3.2
-    - oecd@1.3.2
-    - polygon@1.3.2
-    - sec@1.3.2
-    - seeking_alpha@1.3.2
-    - stockgrid@1.3.2
-    - tiingo@1.3.2
-    - tmx@1.2.2
-    - tradier@1.2.2
-    - tradingeconomics@1.3.2
-    - wsj@1.3.2
-    - yfinance@1.3.3    """
+    - benzinga@1.3.3
+    - bls@1.0.1
+    - cftc@1.0.1
+    - econdb@1.2.3
+    - federal_reserve@1.3.3
+    - fmp@1.3.3
+    - fred@1.3.3
+    - imf@1.0.0
+    - intrinio@1.3.3
+    - oecd@1.3.3
+    - polygon@1.3.3
+    - sec@1.3.3
+    - tiingo@1.3.3
+    - tradingeconomics@1.3.3
+    - yfinance@1.3.4    """
     # fmt: on
 
     def __repr__(self) -> str:
@@ -99,13 +80,6 @@ Extensions:
         from . import derivatives
 
         return derivatives.ROUTER_derivatives(command_runner=self._command_runner)
-
-    @property
-    def econometrics(self):
-        # pylint: disable=import-outside-toplevel
-        from . import econometrics
-
-        return econometrics.ROUTER_econometrics(command_runner=self._command_runner)
 
     @property
     def economy(self):
@@ -150,22 +124,8 @@ Extensions:
         return news.ROUTER_news(command_runner=self._command_runner)
 
     @property
-    def quantitative(self):
-        # pylint: disable=import-outside-toplevel
-        from . import quantitative
-
-        return quantitative.ROUTER_quantitative(command_runner=self._command_runner)
-
-    @property
     def regulators(self):
         # pylint: disable=import-outside-toplevel
         from . import regulators
 
         return regulators.ROUTER_regulators(command_runner=self._command_runner)
-
-    @property
-    def technical(self):
-        # pylint: disable=import-outside-toplevel
-        from . import technical
-
-        return technical.ROUTER_technical(command_runner=self._command_runner)
