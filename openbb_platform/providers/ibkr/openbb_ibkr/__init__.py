@@ -2,7 +2,6 @@
 
 from openbb_core.provider.abstract.provider import Provider
 
-
 template_provider = Provider(
     name="ibkr",
     website="https://interactivebrokers.com",
