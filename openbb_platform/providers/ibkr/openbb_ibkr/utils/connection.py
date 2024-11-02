@@ -25,6 +25,62 @@ load_dotenv()
 IBKR_ACCOUNT_MODE = os.getenv("IBKR_ACCOUNT_MODE", "paper")
 IBKR_PORT = 7497 if IBKR_ACCOUNT_MODE == "paper" else 7496
 
+class IBKRConnectionSingleton:
+    """Singleton class to manage IBKR connection."""
+
+    _instance = None  # Holds the singleton instance
+
+    def __new__(cls, *args, **kwargs):
+        """Ensure only one instance of the class."""
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialize()
+        return cls._instance
+
+    def _initialize(self):
+        """Initialize the IBKR connection."""
+        logging.info("Initializing IBKR connection singleton")
+        self.ib = IB()
+        self._is_connected = False
+        logging.info("Initialization complete: _is_connected set to False")
+
+    async def connect_ibkr(self):
+        """Connect to IBKR synchronously with retry mechanism."""
+        max_retries = 3
+        retry_delay = 2  # Seconds between retries
+
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Connecting to IBKR {IBKR_ACCOUNT_MODE} account on port {IBKR_PORT} (Attempt {attempt + 1})")
+                self.ib.connect("127.0.0.1", IBKR_PORT, clientId=1)  # Removed await
+                self.is_connected = True
+                logger.info("Connected successfully.")
+                return  # Exit after successful connection
+            except Exception as e:
+                self.is_connected = False
+                logger.error(f"Failed to connect to IBKR on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(retry_delay)  # Wait before retrying
+                else:
+                    raise e  # Raise error after max retries
+
+    def disconnect(self):
+        """Gracefully disconnect IBKR connection."""
+        if self.is_connected:
+            self.ib.disconnect()
+            logging.info("Disconnected from IBKR.")
+            self.is_connected = False
+
+    @property
+    def is_connected(self) -> bool:
+        """Check if IBKR connection is active."""
+        return self._is_connected
+
+    @is_connected.setter
+    def is_connected(self, value: bool):
+        """Setter for the is_connected property."""
+        self._is_connected = value
+
 class IBKRWebSocketService:
     """IBKR WebSocket service for managing connections, subscriptions, and streaming data."""
 
@@ -52,7 +108,7 @@ class IBKRWebSocketService:
         subscribe_event = {
             "event": "subscribe",
             "data": {
-                "type": subscription_type,  # e.g., ticker, forex, options, etc.
+                "type": subscription_type,
                 "params": data,  # Additional params for the subscription (generic)
             },
         }
@@ -70,7 +126,6 @@ class IBKRWebSocketService:
             # Process specific data type here
         else:
             logger.info(f"Heartbeat or other event: {data}")
-            # Handle or log heartbeat messages or other types
 
     async def _run_server(self):
         """Start the WebSocket server for handling requests."""
