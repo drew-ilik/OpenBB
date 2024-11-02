@@ -26,4 +26,26 @@ Your turn 👇
 
 » 15-October-2024 by Suvam Das
 » Link to the post:https://www.linkedin.com/posts/suvamd_openbb-decisions-optimization-activity-7251919213701824512-WLSg?utm_source=share&utm_medium=member_desktop
+
+
+>> 21-October-2024 by Mitarth Pandey(github Profile - newcomer119)
+Link to the post : https://x.com/12a_5615909/status/1848097312087970158
 ---
+
+» 19-October-2024 by Harsh Raj
+» Link to the post: https://www.linkedin.com/posts/harshraj1512_opensource-financetool-investmentresearch-activity-7253401682892447744-sxQF?utm_source=share&utm_medium=member_desktop
+
+» 22-October-2024 by adilkadivala
+» Link to the post: [https://www.linkedin.com/posts/harshraj1512_opensource-financetool-investmentresearch-activity-7253401682892447744-sxQF?utm_source=share&utm_medium=member_desktop](https://x.com/adil_kadival/status/1848576037954982310)
+
+» 24-October-2024 by Khaan25
+» Link to the post: https://x.com/zia_webdev/status/1849385144785793341
+
+» 25-October-2024 by Naprila
+» Link to the post:  https://x.com/mkprasad_821/status/1847707536562028901
+
+» 25-October-2024 by harshsbhat
+» Link to the post: https://x.com/HarshBhatX/status/1849882759637995920
+
+» 30-October-2024 by adityadeshlahre
+» Link to the post: https://x.com/adityadeshlahre/status/1851496396962349500
