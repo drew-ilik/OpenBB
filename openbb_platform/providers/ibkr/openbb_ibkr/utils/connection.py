@@ -44,7 +44,7 @@ class IBKRConnectionSingleton:
         self._is_connected = False
         logging.info("Initialization complete: _is_connected set to False")
 
-    async def connect_ibkr(self):
+    async def connect_ibkr(self, clientId: int = 1):
         """Connect to IBKR synchronously with retry mechanism."""
         max_retries = 3
         retry_delay = 2  # Seconds between retries
@@ -52,7 +52,7 @@ class IBKRConnectionSingleton:
         for attempt in range(max_retries):
             try:
                 logger.info(f"Connecting to IBKR {IBKR_ACCOUNT_MODE} account on port {IBKR_PORT} (Attempt {attempt + 1})")
-                self.ib.connect("127.0.0.1", IBKR_PORT, clientId=1)  # Removed await
+                self.ib.connect("127.0.0.1", IBKR_PORT, clientId)
                 self.is_connected = True
                 logger.info("Connected successfully.")
                 return  # Exit after successful connection

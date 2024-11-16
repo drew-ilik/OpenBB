@@ -26,6 +26,29 @@ This project was developed with extensibility and reliability in mind, aligning 
    ```bash
    poetry install
 
+## Usage
+
+- Enivronment variables are stored in the .env file at the root of the OpenBB directory. These include:
+  - IBKR_ACCOUNT_MODE = Use either the "live" or "paper" account modes.
+  - IBKR_SNAPSHOT: Determines the market data request type.
+    - Set to "1" for a snapshot request (one-time data fetch).
+    - Set to "0" for streaming real-time market data (requires a subscription).
+  - IBKR_MARKET_DATA_TYPE: Sets the type of market data to request.
+    - 1 - Real-time data (requires a subscription).
+    - 2 - Frozen real-time data.
+    - 3 - Delayed data.
+    - 4 - Delayed frozen data.
+### Example .env configuration
+```plaintext
+# Options: "live" or "paper" to specify the IB account mode
+IBKR_ACCOUNT_MODE="paper"
+
+# Use "1" for a snapshot request; "0" for streaming market data
+IBKR_SNAPSHOT="1"
+
+# Set the market data type (1 for real-time, 2 for frozen, 3 for delayed, 4 for delayed frozen)
+IBKR_MARKET_DATA_TYPE="3"
+```
 
 ## Credits
 This integration is built upon the solid foundation provided by the ib_async project, a continuation of ib_insync. Special thanks to Matt Stancliff, the primary maintainer of ib_async, for ensuring the continuation of the asynchronous client for Interactive Brokers. We also thank the other contributors who have helped make ib_async a reliable tool for interacting with the IB API.
