@@ -14,9 +14,8 @@ from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsQueryParams,
 )
 from openbb_core.provider.utils.errors import OpenBBError
+from openbb_ibkr.utils import IBKRConnectionSingleton
 from pydantic import Field, field_validator
-
-from openbb_platform.providers.ibkr.openbb_ibkr.utils import IBKRConnectionSingleton
 
 load_dotenv()
 
@@ -89,33 +88,34 @@ class IBKROptionsChainsData(OptionsChainsData):
 
     __doc__ = OptionsChainsData.__doc__
     __alias_dict__ = {
-        "symbol": "symbol",
-        "expiry": "lastTradeDateOrContractMonth",  # Expiration date format from IBKR
-        "strike": "strike",
-        "right": "right",
-        "exchange": "exchange",
-        "multiplier": "multiplier",
-        "trading_class": "tradingClass",
-        "bid": "bidPrice",
-        "ask": "askPrice",
-        "last": "lastPrice",
-        "volume": "volume",
-        "open_interest": "openInterest",
+        # Direct mappings
+        "underlying_symbol": "symbol",
+        "contract_symbol": "localSymbol",
+        "expiration": "lastTradeDateOrContractMonth",  # Expiration date format from IBKR
+        "option_type": "right",
+        "last_trade_time": "lastTradeTime",
+
+        # Fields that need calculation or to be fetched separately
+        "dte": None,
+        "open_interest": None,
+        "volume": None,
+        "last_trade_price": None,
+        "last_trade_size": None,
+        "implied_volatility": None,
     }
 
-    # Define fields matching the aliases
-    # symbol: str
-    # expiry: datetime
-    # strike: float
-    # right: Literal["C", "P"]
-    # exchange: Optional[str]
-    # multiplier: float
-    # trading_class: str
-    # bid: Optional[float]
-    # ask: Optional[float]
-    # last: Optional[float]
-    # volume: Optional[int]
-    # open_interest: Optional[int]
+    @field_validator("expiration", mode="before")
+    def parse_expiration(cls, value):
+        """Convert the expiration date format to a proper datetime object."""
+        try:
+            # Handle both YYYYMM and YYYYMMDD formats
+            if len(value) == 6:
+                return datetime.strptime(value, "%Y%m")
+            elif len(value) == 8:
+                return datetime.strptime(value, "%Y%m%d")
+        except ValueError:
+            raise ValueError(f"Invalid expiration format: {value}")
+        return value
 
 class IBKROptionsChainsFetcher(
     Fetcher[IBKROptionsChainsQueryParams, IBKROptionsChainsData]
