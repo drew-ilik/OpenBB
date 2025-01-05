@@ -61,8 +61,8 @@ class IBKROptionsChainsQueryParams(OptionsChainsQueryParams):
     )
     right: Literal["C", "P", "CALL", "PUT"] = Field(alias="right")
     strike: float = Field(alias="strike")
-    exchange: Optional[str] = Field(None, alias="exchange")
-    currency: str = Field("USD", alias="currency")
+    exchange: str = Field(default="SMART", alias="exchange")
+    currency: str = Field(default="USD", alias="currency")
     multiplier: str = Field(alias="multiplier")
 
     @field_validator("right", mode="before", check_fields=False)
@@ -96,12 +96,12 @@ class IBKROptionsChainsData(OptionsChainsData):
         "last_trade_time": "lastTradeTime",
 
         # Fields that need calculation or to be fetched separately
-        "dte": None,
-        "open_interest": None,
-        "volume": None,
-        "last_trade_price": None,
-        "last_trade_size": None,
-        "implied_volatility": None,
+        # "dte": None,
+        # "open_interest": None,
+        # "volume": None,
+        # "last_trade_price": None,
+        # "last_trade_size": None,
+        # "implied_volatility": None,
     }
 
     @field_validator("expiration", mode="before")
@@ -135,42 +135,32 @@ class IBKROptionsChainsFetcher(
         Sets the market data type for the IBKR connection.
         Market data types: 1 for real-time, 2 for frozen, 3 for delayed, 4 for delayed frozen.
         """
-        await ibkr_connection.ib.reqMarketDataType(market_data_type)
+        await self.ibkr_connection.ib.reqMarketDataType(marketDataType=self.market_data_type)
 
     @staticmethod
     async def aextract_data(
         query: IBKROptionsChainsQueryParams,
+        credentials: Optional[Dict[str, str]],
         **kwargs: Any,
     ) -> Dict:
         """Return the raw data from the IBKR connection."""
 
-        async def fetch_options_chain(self, symbol: str, exchange: str, expiry: str, strike: float, right: str):
-            """
-            Fetch options chain data for a specific symbol.
+        contract = Option(
+            symbol=query.symbol,
+            exchange=query.exchange,
+            expiry=query.expiry,
+            strike=query.strike,
+            right=query.right,
+        )
 
-            :param symbol: The underlying symbol for the option
-            :param exchange: The exchange on which the option is listed
-            :param expiry: Expiration date in 'YYYYMMDD' format
-            :param strike: Strike price of the option
-            :param right: 'C' for Call, 'P' for Put
-            :return: Options data as received from IBKR
-            """
-            contract = Option(symbol=symbol, exchange=exchange, expiry=expiry, strike=strike, right=right)
-
-            # Request market data using the snapshot setting
-            ticker = await ibkr_connection.ib.reqMktData(contract, snapshot=snapshot)
+        # Fetch market data directly
+        ticker = await IBKROptionsChainsFetcher.ibkr_connection.ib.reqMktData(contract, snapshot=IBKROptionsChainsFetcher.snapshot)
 
         options_data = {
-            "symbol": symbol,
+            "symbol": query.symbol,
             "bid": ticker.bid,
             "ask": ticker.ask,
             "last": ticker.last,
-            "greeks": {
-                "delta": ticker.bidGreeks.delta if ticker.bidGreeks else None,
-                "gamma": ticker.bidGreeks.gamma if ticker.bidGreeks else None,
-                "theta": ticker.bidGreeks.theta if ticker.bidGreeks else None,
-                "vega": ticker.bidGreeks.vega if ticker.bidGreeks else None
-            }
         }
         return options_data
 
