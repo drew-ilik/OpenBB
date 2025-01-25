@@ -4,10 +4,10 @@
 import os
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
-from warnings import warn
 
 from dotenv import load_dotenv
 from ib_async.contract import Option
+from openbb_core.provider.abstract.annotated_result import AnnotatedResult
 from openbb_core.provider.abstract.fetcher import Fetcher
 from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsData,
@@ -68,7 +68,7 @@ class IBKROptionsChainsQueryParams(OptionsChainsQueryParams):
     @field_validator("right", mode="before", check_fields=False)
     def validate_right(cls, v):
         if v in {"CALL", "PUT"}:
-            return v[0]  # Convert to 'C' or 'P' if in long form
+            return v[0]
         if v in {"C", "P"}:
             return v
         raise ValueError("Invalid value for 'right'. Use 'C', 'P', 'CALL', or 'PUT'.")
@@ -122,6 +122,9 @@ class IBKROptionsChainsFetcher(
 ):
     """IBKR Options Chains Fetcher."""
 
+    # Tell query executor that credentials are not required for this fetcher
+    require_credentials = False
+
     # Set up environment variables with defaults
     account_mode = os.getenv("IBKR_ACCOUNT_MODE", "paper")
     snapshot = int(os.getenv("IBKR_SNAPSHOT", "1"))  # "1" for snapshot, "0" for streaming
@@ -140,7 +143,7 @@ class IBKROptionsChainsFetcher(
     @staticmethod
     async def aextract_data(
         query: IBKROptionsChainsQueryParams,
-        credentials: Optional[Dict[str, str]],
+        credentials: Optional[Dict[str, str]] = None,
         **kwargs: Any,
     ) -> Dict:
         """Return the raw data from the IBKR connection."""
@@ -154,7 +157,7 @@ class IBKROptionsChainsFetcher(
         )
 
         # Fetch market data directly
-        ticker = await IBKROptionsChainsFetcher.ibkr_connection.ib.reqMktData(contract, snapshot=IBKROptionsChainsFetcher.snapshot)
+        ticker = await IBKROptionsChainsFetcher.ibkr_connection.ib.reqMktData(contract, snapshot=IBKROptionsChainsFetcher.snapshot) # noqa: E501
 
         options_data = {
             "symbol": query.symbol,
@@ -165,5 +168,12 @@ class IBKROptionsChainsFetcher(
         return options_data
 
     @staticmethod
-    def transform_data(query: IBKROptionsChainsQueryParams, data: Dict, **kwargs) -> List[IBKROptionsChainsData]:
-        return [IBKROptionsChainsData(**data)]
+    def transform_data(
+        query: IBKROptionsChainsQueryParams,
+        data: Dict,
+        **kwargs,
+    ) -> AnnotatedResult[IBKROptionsChainsData]:
+        return AnnotatedResult(
+            result=IBKROptionsChainsData(**data),
+            metadata={"source": "IBKR", "query": query.dict()},
+        )
