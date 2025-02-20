@@ -1,9 +1,8 @@
 """IBKR Options Chains Model."""
 
-# pylint: disable=unused-argument
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, Literal, Optional
 
 from dotenv import load_dotenv
 from ib_async.contract import Option
@@ -13,9 +12,10 @@ from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsData,
     OptionsChainsQueryParams,
 )
-from openbb_core.provider.utils.errors import OpenBBError
 from openbb_ibkr.utils.connection import IBKRConnectionSingleton
 from pydantic import Field, field_validator
+
+# from openbb_core.provider.utils.errors import OpenBBError
 
 load_dotenv()
 
@@ -29,8 +29,7 @@ class IBKROptionsChainsQueryParams(OptionsChainsQueryParams):
 
     source: https://ib-api-reloaded.github.io/ib_async/api.html#ib_async.contract.Option
 
-    This class defines the necessary attributes for querying options data
-    through the IBKR API, based on ib_async's Option class.
+    Defines attributes for querying options data through the IBKR API.
 
     Attributes:
         symbol (str): The underlying asset symbol (required).
@@ -45,21 +44,16 @@ class IBKROptionsChainsQueryParams(OptionsChainsQueryParams):
     """
 
     __alias_dict__ = {
-        "symbol": "underlying",
-        "expiry": "expiry",
+        "lastTradeDateOrContractMonth": "expiry",
         "right": "type",
-        "strike": "strike",
-        "exchange": "exchange",
-        "multiplier": "multiplier",
-        "currency": "currency"
     }
 
     symbol: str = Field(alias="underlying")
-    expiry: str = Field(
-        alias="lastTradeDateOrContractMonth",
+    lastTradeDateOrContractMonth: str = Field(
+        alias="expiry",
         description="Specify as 'YYYYMM' for contract month or 'YYYYMMDD' for last trading day."
     )
-    right: Literal["C", "P", "CALL", "PUT"] = Field(alias="right")
+    right: Literal["C", "P", "CALL", "PUT"] = Field(alias="type")
     strike: float = Field(alias="strike")
     exchange: str = Field(default="SMART", alias="exchange")
     currency: str = Field(default="USD", alias="currency")
@@ -73,7 +67,7 @@ class IBKROptionsChainsQueryParams(OptionsChainsQueryParams):
             return v
         raise ValueError("Invalid value for 'right'. Use 'C', 'P', 'CALL', or 'PUT'.")
 
-    @field_validator("expiry", mode ="before", check_fields=False)
+    @field_validator("lastTradeDateOrContractMonth", mode ="before", check_fields=False)
     def validate_expiry(cls, v):
         if len(v) == 6:  # YYYYMM format for contract month
             datetime.strptime(v, "%Y%m")
@@ -150,10 +144,12 @@ class IBKROptionsChainsFetcher(
 
         contract = Option(
             symbol=query.symbol,
-            exchange=query.exchange,
-            expiry=query.expiry,
+            lastTradeDateOrContractMonth=query.lastTradeDateOrContractMonth,
             strike=query.strike,
             right=query.right,
+            exchange=query.exchange,
+            multiplier = query.multiplier,
+            currency=query.currency
         )
 
         # Fetch market data directly
@@ -175,5 +171,5 @@ class IBKROptionsChainsFetcher(
     ) -> AnnotatedResult[IBKROptionsChainsData]:
         return AnnotatedResult(
             result=IBKROptionsChainsData(**data),
-            metadata={"source": "IBKR", "query": query.dict()},
+            metadata={"source": "IBKR", "query": query.model_dump()},
         )
