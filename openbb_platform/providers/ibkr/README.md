@@ -16,7 +16,7 @@ This project was developed with extensibility and reliability in mind, aligning 
 1. Ensure you have installed IB Gateway or TWS and have a valid Interactive Brokers account.
 2. Follow the OpenBB [installation guide](https://docs.openbb.co/platform/installation#source) to set up the platform.
 3. Configure TWS Settings:
-   1. Enable ActiveX and Socket Clients
+   1. Enable ActiveX and Socket Clients for live and paper accounts
    2. Enable Download Open Orders on Connection
    3. Disable Read-Only API
    4. Ensure that the API port is enabled and correctly configured. The default port is usually 7496 (live) or 7497 (paper), but you can adjust this if needed.
