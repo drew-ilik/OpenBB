@@ -14,7 +14,7 @@ from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsQueryParams,
 )
 from openbb_ibkr.utils.connection import IBKRConnectionSingleton
-from openbb_ibkr.utils.helpers import replace_nan
+from openbb_ibkr.utils.helpers import normalize_result_data
 from pydantic import Field, field_validator
 
 # from openbb_core.provider.utils.errors import OpenBBError
@@ -87,7 +87,7 @@ class IBKROptionsChainsData(OptionsChainsData):
         # Direct mappings
         "underlying_symbol": "symbol",
         "contract_symbol": "localSymbol",
-        "expiration": "lastTradeDateOrContractMonth",  # Expiration date format from IBKR
+        "expiration": "lastTradeDateOrContractMonth",
         "option_type": "right",
         "last_trade_time": "lastTradeTime",
 
@@ -186,17 +186,19 @@ class IBKROptionsChainsFetcher(
 
         result_data = {
             "symbol": query.symbol,
-            "bid": replace_nan(ticker_data.get("bid")),
-            "ask": replace_nan(ticker_data.get("ask")),
-            "last": replace_nan(ticker_data.get("last")),
-            "implied_volatility": replace_nan(ticker_data.get("impliedVolatility")),
-            "open_interest": replace_nan(
+            "bid": (ticker_data.get("bid")),
+            "ask": (ticker_data.get("ask")),
+            "last": (ticker_data.get("last")),
+            "implied_volatility": (ticker_data.get("impliedVolatility")),
+            "open_interest": (
                 ticker_data.get("callOpenInterest") if query.right == "C" else ticker_data.get("putOpenInterest")
             ),
-            "volume": replace_nan(
+            "volume": (
                 ticker_data.get("callVolume") if query.right == "C" else ticker_data.get("putVolume")
             ),
         }
+
+        result_data = normalize_result_data(result_data)
 
         metadata_data: Dict[str, Any] = {
             key: value

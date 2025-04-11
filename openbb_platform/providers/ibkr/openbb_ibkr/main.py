@@ -18,7 +18,6 @@ class IBKRServiceManager:
         if not self.is_running:
             logger.info("Starting IBKR service...")
             try:
-                # Connect to IBKR
                 self.connection.connect_ibkr()
                 # Start the WebSocket service in a separate thread
                 self.service_thread = threading.Thread(target=self.connection.start)
@@ -35,10 +34,10 @@ class IBKRServiceManager:
         """Stop the IBKR WebSocket service and disconnect from IBKR."""
         if self.is_running:
             logger.info("Stopping IBKR service...")
-            self.connection.stop()  # Stop the WebSocket service
+            self.connection.stop()
             if self.service_thread:
                 self.service_thread.join()  # Wait for the thread to finish
-            self.connection.disconnect_ibkr()  # Disconnect from IBKR
+            self.connection.disconnect_ibkr()
             self.is_running = False
             logger.info("IBKR WebSocket Service stopped.")
         else:
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     service_manager = IBKRServiceManager()
     try:
         service_manager.start_service()
-        # Keeping the service running. Other tasks or loops may be included here.
+
     except KeyboardInterrupt:
         logger.info("Service interrupted by user.")
     finally:

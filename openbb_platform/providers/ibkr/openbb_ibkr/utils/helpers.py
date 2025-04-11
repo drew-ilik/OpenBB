@@ -1,11 +1,7 @@
 """IBKR Provider Helpers"""
 import math
+from typing import Any
 
-# def fetch_in_batches(self, symbols, batch_size=100):
-#     for i in range(0, len(symbols), batch_size):
-#         batch = symbols[i:i + batch_size]
-#         # Fetch data for each batch
-#         data = self.connection.ib.reqMktData(batch, ...)
 
 def fetch_and_cache(self, symbol):
     if symbol in self.cache:
@@ -18,5 +14,18 @@ def is_live_account(account_mode: str) -> bool:
     """Check if the current account mode is live or paper."""
     return account_mode == "live"
 
-def replace_nan(value):
-    return None if value is None or (isinstance(value, float) and math.isnan(value)) else value
+def normalize_result_data(raw: dict[str, Any]) -> dict[str, list[Any]]:
+    """Normalize raw ticker data for use in OpenBB fetchers."""
+
+    def process_value(v: Any) -> Any:
+        if isinstance(v, float) and math.isnan(v):
+            return None
+
+    return {
+        k: (
+            v if isinstance(v, list)
+            else [process_value(v)] if v is not None
+            else []
+        )
+        for k, v in raw.items()
+    }
