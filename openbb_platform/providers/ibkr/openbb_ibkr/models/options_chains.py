@@ -185,7 +185,11 @@ class IBKROptionsChainsFetcher(
 
 
         result_data = {
-            "symbol": query.symbol,
+            "underlying_symbol": query.symbol,
+            "contract_symbol": ticker_data.get("localSymbol"),
+            "expiration": ticker_data.get("lastTradeDateOrContractMonth"),
+            "strike": query.strike,
+            "option_type": query.right,
             "bid": (ticker_data.get("bid")),
             "ask": (ticker_data.get("ask")),
             "last": (ticker_data.get("last")),
