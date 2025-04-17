@@ -20,6 +20,7 @@ def normalize_result_data(raw: dict[str, Any]) -> dict[str, list[Any]]:
     def process_value(v: Any) -> Any:
         if isinstance(v, float) and math.isnan(v):
             return None
+        return v
 
     return {
         k: (

@@ -13,11 +13,10 @@ from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsData,
     OptionsChainsQueryParams,
 )
+from openbb_core.provider.utils.errors import OpenBBError
 from openbb_ibkr.utils.connection import IBKRConnectionSingleton
 from openbb_ibkr.utils.helpers import normalize_result_data
 from pydantic import Field, field_validator
-
-# from openbb_core.provider.utils.errors import OpenBBError
 
 load_dotenv()
 
@@ -151,79 +150,83 @@ class IBKROptionsChainsFetcher(
         query: IBKROptionsChainsQueryParams,
         credentials: Optional[Dict[str, str]] = None,
         **kwargs: Any,
-    ) -> Dict:
+    ) -> AnnotatedResult[IBKROptionsChainsData]:
         """Return the raw data from the IBKR connection."""
 
-        contract = Option(
-            symbol=query.symbol,
-            lastTradeDateOrContractMonth=query.lastTradeDateOrContractMonth,
-            strike=query.strike,
-            right=query.right,
-            exchange=query.exchange,
-            multiplier = query.multiplier,
-            currency=query.currency
-        )
-
-        update_event = asyncio.Event()
-
-        def on_update(_ticker):
-            """Callback function to trigger event when new data arrives."""
-            update_event.set()
-
-
-        # generic_tick_list = "100,101,104,106,165,221,233"
-        generic_tick_list = "100,101,104,106,165,221,233,236,258,293,294,295,375,411,456,588"
-        ticker = IBKROptionsChainsFetcher.ibkr_connection.ib.reqMktData(
-            contract, genericTickList=generic_tick_list,
-            snapshot=IBKROptionsChainsFetcher.snapshot
-        )
-
-        ticker.updateEvent.connect(listener=on_update)
-
         try:
-            await asyncio.wait_for(update_event.wait(), timeout=10)
-        except asyncio.TimeoutError:
-            raise TimeoutError(f"Timed out waiting for market data for {query.symbol}.")
-        finally:
-            ticker.updateEvent.disconnect(on_update)
+            contract = Option(
+                symbol=query.symbol,
+                lastTradeDateOrContractMonth=query.lastTradeDateOrContractMonth,
+                strike=query.strike,
+                right=query.right,
+                exchange=query.exchange,
+                multiplier = query.multiplier,
+                currency=query.currency
+            )
 
-        ticker_data = {
-            attr: getattr(ticker, attr, None)
-            for attr in dir(ticker)
-            if not attr.startswith("_") and not callable(getattr(ticker, attr, None))
-        }
+            update_event = asyncio.Event()
+
+            def on_update(_ticker):
+                """Callback function to trigger event when new data arrives."""
+                update_event.set()
 
 
-        result_data = {
-            "underlying_symbol": query.symbol,
-            "contract_symbol": ticker_data.get("localSymbol"),
-            "expiration": ticker_data.get("lastTradeDateOrContractMonth"),
-            "strike": query.strike,
-            "option_type": query.right,
-            "bid": (ticker_data.get("bid")),
-            "ask": (ticker_data.get("ask")),
-            "last": (ticker_data.get("last")),
-            "implied_volatility": (ticker_data.get("impliedVolatility")),
-            "open_interest": (
-                ticker_data.get("callOpenInterest") if query.right == "C" else ticker_data.get("putOpenInterest")
-            ),
-            "volume": (
-                ticker_data.get("callVolume") if query.right == "C" else ticker_data.get("putVolume")
-            ),
-        }
+            # generic_tick_list = "100,101,104,106,165,221,233"
+            generic_tick_list = "100,101,104,106,165,221,233,236,258,293,294,295,375,411,456,588"
+            ticker = IBKROptionsChainsFetcher.ibkr_connection.ib.reqMktData(
+                contract, genericTickList=generic_tick_list,
+                snapshot=IBKROptionsChainsFetcher.snapshot
+            )
 
-        result_data = normalize_result_data(result_data)
+            ticker.updateEvent.connect(listener=on_update)
 
-        metadata_data: Dict[str, Any] = {
-            key: value
-            for key, value in ticker_data.items()
-            if key not in result_data
-        }
+            try:
+                await asyncio.wait_for(update_event.wait(), timeout=10)
+            except asyncio.TimeoutError:
+                raise TimeoutError(f"Timed out waiting for market data for {query.symbol}.")
+            finally:
+                ticker.updateEvent.disconnect(on_update)
 
-        return AnnotatedResult(
-            result=IBKROptionsChainsData(**result_data),
-            metadata=metadata_data
-        )
+            ticker_data = {
+                attr: getattr(ticker, attr, None)
+                for attr in dir(ticker)
+                if not attr.startswith("_") and not callable(getattr(ticker, attr, None))
+            }
+
+
+            result_data = {
+                "underlying_symbol": query.symbol,
+                "contract_symbol": ticker_data.get("localSymbol"),
+                "expiration": ticker_data.get("lastTradeDateOrContractMonth"),
+                "strike": query.strike,
+                "option_type": query.right,
+                "bid": (ticker_data.get("bid")),
+                "ask": (ticker_data.get("ask")),
+                "last": (ticker_data.get("last")),
+                "implied_volatility": (ticker_data.get("impliedVolatility")),
+                "open_interest": (
+                    ticker_data.get("callOpenInterest") if query.right == "C" else ticker_data.get("putOpenInterest")
+                ),
+                "volume": (
+                    ticker_data.get("callVolume") if query.right == "C" else ticker_data.get("putVolume")
+                ),
+            }
+
+            result_data = normalize_result_data(result_data)
+
+            metadata_data: Dict[str, Any] = {
+                key: value
+                for key, value in ticker_data.items()
+                if key not in result_data.keys
+            }
+
+            return AnnotatedResult(
+                result=IBKROptionsChainsData(**result_data),
+                metadata=metadata_data
+            )
+
+        except Exception as e:
+            raise OpenBBError(str(e)) from e
 
 
     @staticmethod
