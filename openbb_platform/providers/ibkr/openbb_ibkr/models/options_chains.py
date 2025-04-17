@@ -101,17 +101,27 @@ class IBKROptionsChainsData(OptionsChainsData):
     }
 
     @field_validator("expiration", mode="before")
-    def parse_expiration(cls, value):
+    def parse_expiration(cls, value: list[Any]) -> list[datetime]:
         """Convert the expiration date format to a proper datetime object."""
-        try:
-            # Handle both YYYYMM and YYYYMMDD formats
-            if len(value) == 6:
-                return datetime.strptime(value, "%Y%m")
-            elif len(value) == 8:
-                return datetime.strptime(value, "%Y%m%d")
-        except ValueError:
-            raise ValueError(f"Invalid expiration format: {value}")
-        return value
+        parsed = []
+
+        for v in value:
+            if v is None:
+                parsed.append(None)
+            elif isinstance(v, str):
+                if len(v) == 6:
+                    parsed.append(datetime.strptime(v, "%Y%m"))
+                elif len(v) == 8:
+                    parsed.append(datetime.strptime(v, "%Y%m%d"))
+                else:
+                    raise ValueError(f"Invalid expiration format: {v}")
+            elif isinstance(v, datetime):
+                parsed.append(v)
+            else:
+                raise TypeError(f"Unsupported type for expiration: {type(v)}")
+
+        return parsed
+
 
 class IBKROptionsChainsFetcher(
     Fetcher[IBKROptionsChainsQueryParams, IBKROptionsChainsData]
