@@ -83,20 +83,10 @@ class IBKROptionsChainsData(OptionsChainsData):
 
     __doc__ = OptionsChainsData.__doc__
     __alias_dict__ = {
-        # Direct mappings
         "underlying_symbol": "symbol",
-        "contract_symbol": "localSymbol",
         "expiration": "lastTradeDateOrContractMonth",
         "option_type": "right",
         "last_trade_time": "lastTradeTime",
-
-        # Fields that need calculation or to be fetched separately
-        # "dte": None,
-        # "open_interest": None,
-        # "volume": None,
-        # "last_trade_price": None,
-        # "last_trade_size": None,
-        # "implied_volatility": None,
     }
 
     @field_validator("expiration", mode="before")
@@ -127,15 +117,12 @@ class IBKROptionsChainsFetcher(
 ):
     """IBKR Options Chains Fetcher."""
 
-    # Tell query executor that credentials are not required for this fetcher
     require_credentials = False
 
-    # Set up environment variables with defaults
     account_mode = os.getenv("IBKR_ACCOUNT_MODE", "paper")
     snapshot = int(os.getenv("IBKR_SNAPSHOT", "1"))  # "1" for snapshot, "0" for streaming
     market_data_type = int(os.getenv("IBKR_MARKET_DATA_TYPE", "1"))  # 1 for real-time data
 
-    # Initialize the singleton connection
     ibkr_connection = IBKRConnectionSingleton()
 
     async def set_market_data_type(self):
@@ -196,8 +183,8 @@ class IBKROptionsChainsFetcher(
 
             result_data = {
                 "underlying_symbol": query.symbol,
-                "contract_symbol": ticker_data.get("localSymbol"),
-                "expiration": ticker_data.get("lastTradeDateOrContractMonth"),
+                "contract_symbol": ticker_data.get("contract.symbol"),
+                "expiration": query.lastTradeDateOrContractMonth,
                 "strike": query.strike,
                 "option_type": query.right,
                 "bid": (ticker_data.get("bid")),
@@ -217,8 +204,13 @@ class IBKROptionsChainsFetcher(
             metadata_data: Dict[str, Any] = {
                 key: value
                 for key, value in ticker_data.items()
-                if key not in result_data.keys
+                if key not in result_data
             }
+
+            for field, value in result_data.items():
+                if isinstance(value, list) and not value:
+                    raise OpenBBError(f"Missing required data for field '{field}'.")
+
 
             return AnnotatedResult(
                 result=IBKROptionsChainsData(**result_data),
