@@ -180,10 +180,11 @@ class IBKROptionsChainsFetcher(
                 if not attr.startswith("_") and not callable(getattr(ticker, attr, None))
             }
 
+            contract_obj = ticker_data.get("contract")
 
             result_data = {
                 "underlying_symbol": query.symbol,
-                "contract_symbol": ticker_data.get("contract.symbol"),
+                "contract_symbol": getattr(contract_obj, "symbol", None) if contract_obj else None,
                 "expiration": query.lastTradeDateOrContractMonth,
                 "strike": query.strike,
                 "option_type": query.right,
