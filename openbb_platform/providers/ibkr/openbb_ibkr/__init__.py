@@ -1,8 +1,9 @@
 """Interactive Brokers Provider Module."""
 
 from openbb_core.provider.abstract.provider import Provider
+from openbb_ibkr.models.options_chains import IBKROptionsChainsFetcher
 
-template_provider = Provider(
+ibkr_provider = Provider(
     name="ibkr",
     website="https://interactivebrokers.com",
     description=("""The Interactive Brokers (IBKR) provider allows users to fetch real-time
@@ -10,7 +11,9 @@ template_provider = Provider(
         designed to support a variety of assets including stocks, options, futures,
         and forex, integrating seamlessly with OpenBB."""
     ),
-    fetcher_dict = {},
+    fetcher_dict = {
+        "options_chains": IBKROptionsChainsFetcher,
+    },
 )
 
 def setup_ibkr_provider():

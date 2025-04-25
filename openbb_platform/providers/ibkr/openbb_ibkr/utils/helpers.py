@@ -30,3 +30,9 @@ def normalize_result_data(raw: dict[str, Any]) -> dict[str, list[Any]]:
         )
         for k, v in raw.items()
     }
+
+def safe_getattr(obj, attr: str, default=None):
+    try:
+        return getattr(obj, attr, default)
+    except Exception:
+        return default
