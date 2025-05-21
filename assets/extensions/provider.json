@@ -155,6 +155,15 @@
         "website": "https://data.gov"
     },
     {
+        "packageName": "openbb-ibkr",
+        "optional": true,
+        "reprName": "Interactive Brokers (IBKR)",
+        "description": "Interactive Brokers is a global brokerage firm that provides\ntrading and investment services to individual and institutional investors.\nIt offers a wide range of financial products, including stocks, options,\nforex, futures, and fixed income securities.",
+        "credentials": [],
+        "website":"https://interactivebrokers.com",
+        "instructions": "Please see the setup guide in the IBKR provider documentation: https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/providers/ibkr/README.md"
+    },
+    {
         "packageName": "openbb-imf",
         "optional": false,
         "reprName": "International Monetary Fund (IMF) Public Data API",
