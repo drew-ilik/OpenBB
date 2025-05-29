@@ -2503,6 +2503,7 @@ class ROUTER_economy(Container):
                                     "provider": "federal_reserve",
                                 },
                                 "show": False,
+                                "roles": ["fileSelector"],
                             }
                         }
                     },
