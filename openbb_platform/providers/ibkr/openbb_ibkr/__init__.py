@@ -1,8 +1,7 @@
 """Interactive Brokers Provider Module."""
 
 from openbb_core.provider.abstract.provider import Provider
-
-from .models.options_chains import IBKROptionsChainsFetcher
+from openbb_ibkr.models.options_chains import IBKROptionsChainsFetcher
 
 ibkr_provider = Provider(
     name="ibkr",
