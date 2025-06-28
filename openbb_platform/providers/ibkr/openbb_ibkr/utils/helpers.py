@@ -5,43 +5,12 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Generator, Optional
 
-import openbb
-from openbb_core.app.static.package_builder import PackageBuilder
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(message)s"))
 logger.addHandler(handler)
 
-class DryRunPackageBuilder(PackageBuilder):
-    """A PackageBuilder subclass that intercepts file writes for a dry-run rebuild with verbose output."""
-
-    def __init__(
-            self,
-            project_dir: Path,
-            lint: bool = True,
-            verbose: bool = False,
-            **kwargs: Any,
-        ):
-        super().__init__(project_dir, lint, verbose, **kwargs)
-        self.verbose = verbose
-
-    def _write_file(self, path: Path, content: str) -> None:
-        """
-        Instead of writing the file, log the intended write operation with optional verbose output.
-        """
-        if self.verbose:
-            rel = path.relative_to(Path.cwd())
-            logger.info("[dry-run] would write: %s", rel)
-        # do *not* call super()._write_file
-
-    def build(self, modules=None):
-        if self.verbose:
-            logger.info("Dry-run build started …")
-        super().build(modules)
-        if self.verbose:
-            logger.info("Dry-run complete (no files changed).")
 
 @contextmanager
 def openbb_dry_run() -> Generator[None, Any, None]:
@@ -49,6 +18,39 @@ def openbb_dry_run() -> Generator[None, Any, None]:
     Context manager to temporarily replace the PackageBuilder with DryRunPackageBuilder,
     enabling a dry-run of the static asset rebuild.
     """
+    # lazy imports to break the circular dependency:
+    import openbb  # noqa: F401
+    from openbb_core.app.static.package_builder import PackageBuilder
+
+    class DryRunPackageBuilder(PackageBuilder):
+        """A PackageBuilder subclass that intercepts file writes for a dry-run rebuild with verbose output."""
+
+        def __init__(
+                self,
+                project_dir: Path,
+                lint: bool = True,
+                verbose: bool = False,
+                **kwargs: Any,
+            ):
+            super().__init__(project_dir, lint, verbose, **kwargs)
+            self.verbose = verbose
+
+        def _write_file(self, path: Path, content: str) -> None:
+            """
+            Instead of writing the file, log the intended write operation with optional verbose output.
+            """
+            if self.verbose:
+                rel = path.relative_to(Path.cwd())
+                logger.info("[dry-run] would write: %s", rel)
+            # do *not* call super()._write_file
+
+        def build(self, modules=None):
+            if self.verbose:
+                logger.info("Dry-run build started …")
+            super().build(modules)
+            if self.verbose:
+                logger.info("Dry-run complete (no files changed).")
+
     original_cls = openbb._PackageBuilder
     openbb._PackageBuilder = DryRunPackageBuilder
     try:
