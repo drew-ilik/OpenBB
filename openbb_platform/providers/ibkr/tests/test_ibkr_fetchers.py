@@ -3,11 +3,12 @@
 import inspect
 from typing import get_args
 
-import pandas as pd
+# import pandas as pd
 import pytest
 from openbb import obb
 from openbb_core.app.service.user_service import UserService
-from openbb_ibkr.models.options_chains import IBKROptionsChainsData, IBKROptionsChainsFetcher
+
+# from openbb_ibkr.models.options_chains import IBKROptionsChainsData, IBKROptionsChainsFetcher
 from openbb_ibkr.utils.helpers import openbb_dry_run
 
 test_credentials = UserService().default_user_settings.credentials.model_dump(
@@ -31,7 +32,7 @@ def test_chains_endpoint_provider():
 
     assert "ibkr" in providers, f"Expected 'ibkr' in providers, got {providers!r}"
 
-# If you have a recorded VCR cassette:
+# Recorded VCR cassette:
 
 # @pytest.mark.vcr()
 # @pytest.mark.asyncio
