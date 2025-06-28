@@ -12,6 +12,6 @@ ibkr_provider = Provider(
         and forex, integrating seamlessly with OpenBB."""
     ),
     fetcher_dict = {
-        "options_chains": IBKROptionsChainsFetcher,
+        "OptionsChains": IBKROptionsChainsFetcher,
     },
 )

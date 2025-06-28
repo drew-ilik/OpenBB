@@ -117,6 +117,11 @@ class IBKROptionsChainsFetcher(
 ):
     """IBKR Options Chains Fetcher."""
 
+    @staticmethod
+    def transform_query(params: Dict[str, Any]) -> IBKROptionsChainsQueryParams:
+        """Transforms the query"""
+        return IBKROptionsChainsQueryParams(**params)
+
     require_credentials = False
 
     account_mode = os.getenv("IBKR_ACCOUNT_MODE", "paper")
