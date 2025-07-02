@@ -121,18 +121,6 @@ class ROUTER_regulators_cftc(Container):
             If the report is futures-only or combined.
         contract_units : Optional[str]
             Contract units.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # Get the latest report for all items classified as, GOLD.
-        >>> obb.regulators.cftc.cot(id='gold', provider='cftc')
-        >>> # Enter the entire history for a single CFTC Market Contract Code.
-        >>> obb.regulators.cftc.cot(id='088691', provider='cftc')
-        >>> # Get the report for futures only.
-        >>> obb.regulators.cftc.cot(id='088691', futures_only=True, provider='cftc')
-        >>> # Get the most recent Commodity Index Traders Supplemental Report.
-        >>> obb.regulators.cftc.cot(id='all', report_type='supplemental', provider='cftc')
         """  # noqa: E501
 
         return self._run(
@@ -222,12 +210,6 @@ class ROUTER_regulators_cftc(Container):
             Symbol representing the entity requested in the data.
         commodity : Optional[str]
             Name of the commodity. (provider: cftc)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.cftc.cot_search(provider='cftc')
-        >>> obb.regulators.cftc.cot_search(query='gold', provider='cftc')
         """  # noqa: E501
 
         return self._run(

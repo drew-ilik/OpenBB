@@ -76,12 +76,6 @@ class ROUTER_crypto(Container):
             The exchange code the crypto trades on. (provider: fmp)
         exchange_name : Optional[str]
             The short name of the exchange the crypto trades on. (provider: fmp)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.crypto.search(provider='fmp')
-        >>> obb.crypto.search(query='BTCUSD', provider='fmp')
         """  # noqa: E501
 
         return self._run(

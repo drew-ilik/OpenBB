@@ -24,11 +24,20 @@ class ROUTER_derivatives_options(Container):
     @validate
     def chains(
         self,
-        symbol: Annotated[str, OpenBBField(description="Symbol to get data for.")],
-        provider: Annotated[
-            Optional[Literal["intrinio", "yfinance"]],
+        symbol: Annotated[
+            str,
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: intrinio, yfinance."
+                description="Symbol to get data for.\nChoices for deribit: 'BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'PAXG'"
+            ),
+        ],
+        provider: Annotated[
+            Optional[
+                Literal[
+                    "cboe", "deribit", "ibkr", "intrinio", "tmx", "tradier", "yfinance"
+                ]
+            ],
+            OpenBBField(
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cboe, deribit, ibkr, intrinio, tmx, tradier, yfinance."
             ),
         ] = None,
         **kwargs
@@ -38,9 +47,25 @@ class ROUTER_derivatives_options(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: intrinio, yfinance.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cboe, deribit, ibkr, intrinio, tmx, tradier, yfinance.
         symbol : str
             Symbol to get data for.
+            Choices for deribit: 'BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'PAXG'
+        use_cache : bool
+            When True, the company directories will be cached for24 hours and are used to validate symbols. The results of the function are not cached. Set as False to bypass. (provider: cboe)
+        last_trade_date_or_contract_month : Optional[str]
+            Specify as 'YYYYMM' for contract month or 'YYYYMMDD' for last trading day. (provider: ibkr)
+        right : Optional[Literal['C', 'P', 'CALL', 'PUT']]
+            None
+            Choices for ibkr: 'C', 'P', 'CALL', 'PUT'
+        strike : Optional[float]
+            None
+        exchange : str
+            None
+        currency : str
+            None
+        multiplier : Optional[str]
+            None
         delay : Literal['eod', 'realtime', 'delayed']
             Whether to return delayed, realtime, or eod data. (provider: intrinio)
         date : Optional[date]
@@ -188,17 +213,43 @@ class ROUTER_derivatives_options(Container):
             Vega of the option.
         rho : list[Optional[float]]
             Rho of the option.
+        bid_iv : Union[list[Optional[float]], list[Optional[float]]]
+            The implied volatility of the bid price. (provider: deribit, tradier)
+        ask_iv : Union[list[Optional[float]], list[Optional[float]]]
+            The implied volatility of the ask price. (provider: deribit, tradier)
+        interest_rate : list[Optional[float]]
+            The interest rate used by Deribit to calculate greeks. (provider: deribit)
+        underlying_spot_price : Optional[list[float]]
+            The spot price of the underlying asset. The underlying asset is the specific future or index that the option is based on. (provider: deribit)
+        settlement_price : Union[list[Optional[float]], list[Optional[float]]]
+            The settlement price of the contract. (provider: deribit);
+            Settlement price on that date. (provider: tmx)
+        min_price : list[Optional[float]]
+            The minimum price allowed. (provider: deribit)
+        max_price : list[Optional[float]]
+            The maximum price allowed. (provider: deribit)
+        volume_notional : list[Optional[float]]
+            The notional trading volume of the contract, as USD or USDC. (provider: deribit)
+        timestamp : Optional[list[datetime]]
+            The datetime of the data, as America/New_York time. (provider: deribit)
+        transactions : list[Optional[int]]
+            Number of transactions for the contract. (provider: tmx)
+        total_value : list[Optional[float]]
+            Total value of the transactions. (provider: tmx)
+        phi : list[Optional[float]]
+            Phi of the option. The sensitivity of the option relative to dividend yield. (provider: tradier)
+        orats_final_iv : list[Optional[float]]
+            ORATS final implied volatility of the option, updated once per hour. (provider: tradier)
+        year_high : list[Optional[float]]
+            52-week high price of the option. (provider: tradier)
+        year_low : list[Optional[float]]
+            52-week low price of the option. (provider: tradier)
+        greeks_time : list[Optional[datetime]]
+            Timestamp of the last greeks update. Greeks/IV data is updated once per hour. (provider: tradier)
         in_the_money : list[Optional[bool]]
             Whether the option is in the money. (provider: yfinance)
         currency : list[Optional[str]]
             Currency of the option. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.derivatives.options.chains(symbol='AAPL', provider='intrinio')
-        >>> # Use the "date" parameter to get the end-of-day-data for a specific date, where supported.
-        >>> obb.derivatives.options.chains(symbol='AAPL', date='2023-01-25', provider='intrinio')
         """  # noqa: E501
 
         return self._run(
@@ -208,7 +259,15 @@ class ROUTER_derivatives_options(Container):
                     "provider": self._get_provider(
                         provider,
                         "derivatives.options.chains",
-                        ("intrinio", "yfinance"),
+                        (
+                            "cboe",
+                            "deribit",
+                            "ibkr",
+                            "intrinio",
+                            "tmx",
+                            "tradier",
+                            "yfinance",
+                        ),
                     )
                 },
                 standard_params={
@@ -216,6 +275,12 @@ class ROUTER_derivatives_options(Container):
                 },
                 extra_params=kwargs,
                 info={
+                    "symbol": {
+                        "deribit": {
+                            "multiple_items_allowed": False,
+                            "choices": ["BTC", "ETH", "SOL", "XRP", "BNB", "PAXG"],
+                        }
+                    },
                     "delay": {
                         "intrinio": {
                             "multiple_items_allowed": False,
@@ -337,11 +402,6 @@ class ROUTER_derivatives_options(Container):
             The highest ask price. (provider: intrinio)
         ask_low : list[Optional[float]]
             The lowest ask price. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.derivatives.options.snapshots(provider='intrinio')
         """  # noqa: E501
 
         return self._run(
@@ -438,13 +498,6 @@ class ROUTER_derivatives_options(Container):
             The total number of contracts involved in a single transaction. (provider: intrinio)
         total_value : Optional[Union[int, float]]
             The aggregated value of all option contract premiums included in the trade. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.derivatives.options.unusual(symbol='TSLA', provider='intrinio')
-        >>> # Use the 'symbol' parameter to get the most recent activity for a specific symbol.
-        >>> obb.derivatives.options.unusual(symbol='TSLA', provider='intrinio')
         """  # noqa: E501
 
         return self._run(

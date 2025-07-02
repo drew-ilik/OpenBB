@@ -110,13 +110,6 @@ class ROUTER_economy_survey(Container):
                 The title of the series.
             survey_name : Optional[str]
                 The name of the survey.
-
-            Examples
-            --------
-            >>> from openbb import obb
-            >>> obb.economy.survey.bls_search(provider='bls', category='cpi')
-            >>> # Use semi-colon to separate multiple queries as an & operator.
-            >>> obb.economy.survey.bls_search(provider='bls', category='cpi', query='seattle;gasoline')
         """  # noqa: E501
 
         return self._run(
@@ -176,6 +169,12 @@ class ROUTER_economy_survey(Container):
             Union[datetime.date, None, str],
             OpenBBField(description="End date of the data, in YYYY-MM-DD format."),
         ] = None,
+        chart: Annotated[
+            bool,
+            OpenBBField(
+                description="Whether to create a chart or not, by default False."
+            ),
+        ] = False,
         provider: Annotated[
             Optional[Literal["bls"]],
             OpenBBField(
@@ -202,6 +201,8 @@ class ROUTER_economy_survey(Container):
             Include annual averages in the response, if available. Default is False. (provider: bls)
         aspects : bool
             Include all aspects associated with a data point for a given BLS series ID, if available. Returned with the series metadata, under `extras` of the response object. Default is False. (provider: bls)
+        chart : bool
+            Whether to create a chart or not, by default False.
 
         Returns
         -------
@@ -247,11 +248,6 @@ class ROUTER_economy_survey(Container):
             Latest value indicator. (provider: bls)
         footnotes : Optional[str]
             Footnotes accompanying the value. (provider: bls)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.bls_series(provider='bls', symbol='CES0000000001')
         """  # noqa: E501
 
         return self._run(
@@ -270,6 +266,7 @@ class ROUTER_economy_survey(Container):
                     "end_date": end_date,
                 },
                 extra_params=kwargs,
+                chart=chart,
                 info={
                     "symbol": {"bls": {"multiple_items_allowed": True, "choices": None}}
                 },
@@ -375,11 +372,6 @@ class ROUTER_economy_survey(Container):
             Labor Costs Index.
         non_labor_costs : Optional[float]
             Non-Labor Costs Index.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.economic_conditions_chicago(provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -497,12 +489,6 @@ class ROUTER_economy_survey(Container):
             Percent of respondents reporting a decrease over the last month.
         percent_reporting_no_change : Optional[float]
             Percent of respondents reporting no change over the last month.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.manufacturing_outlook_ny(provider='fred')
-        >>> obb.economy.survey.manufacturing_outlook_ny(topic='hours_worked,new_orders', transform='pc1', provider='fred', seasonally_adjusted=True)
         """  # noqa: E501
 
         return self._run(
@@ -629,12 +615,6 @@ class ROUTER_economy_survey(Container):
             Percent of respondents reporting a decrease over the last month.
         percent_reporting_no_change : Optional[float]
             Percent of respondents reporting no change over the last month.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.manufacturing_outlook_texas(provider='fred')
-        >>> obb.economy.survey.manufacturing_outlook_texas(topic='business_outlook,new_orders', transform='pc1', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -739,12 +719,6 @@ class ROUTER_economy_survey(Container):
             The element_id of each child, as a comma-separated string. (provider: fred)
         level : Optional[int]
             The indentation level of the element. (provider: fred)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.nonfarm_payrolls(provider='fred')
-        >>> obb.economy.survey.nonfarm_payrolls(category='avg_hours', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -837,12 +811,6 @@ class ROUTER_economy_survey(Container):
             Survey value.
         title : Optional[str]
             Survey title.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.sloos(provider='fred')
-        >>> obb.economy.survey.sloos(category='credit_card', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -948,11 +916,6 @@ class ROUTER_economy_survey(Container):
             Index of the results of the University of Michigan's monthly Survey of Consumers, which is used to estimate future spending and saving.  (1966:Q1=100).
         inflation_expectation : Optional[float]
             Median expected price change next 12 months, Surveys of Consumers.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.survey.university_of_michigan(provider='fred')
         """  # noqa: E501
 
         return self._run(

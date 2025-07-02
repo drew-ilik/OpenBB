@@ -82,12 +82,6 @@ class ROUTER_economy_gdp(Container):
                     None
                 value : Union[int, float]
                     Forecasted GDP value for the country and date.
-
-                Examples
-                --------
-                >>> from openbb import obb
-                >>> obb.economy.gdp.forecast(provider='oecd')
-                >>> obb.economy.gdp.forecast(country='united_states,germany,france', frequency='annual', units='capita', provider='oecd')
         """  # noqa: E501
 
         return self._run(
@@ -238,12 +232,6 @@ class ROUTER_economy_gdp(Container):
             Nominal GDP growth rate quarter over quarter. (provider: econdb)
         nominal_growth_yoy : Optional[float]
             Nominal GDP growth rate year over year. (provider: econdb)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.gdp.nominal(provider='oecd')
-        >>> obb.economy.gdp.nominal(units='capita', country='all', frequency='annual', provider='oecd')
         """  # noqa: E501
 
         return self._run(
@@ -395,12 +383,6 @@ class ROUTER_economy_gdp(Container):
             Real GDP growth rate quarter over quarter. (provider: econdb)
         real_growth_yoy : Optional[float]
             Real GDP growth rate year over year. (provider: econdb)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.gdp.real(provider='oecd')
-        >>> obb.economy.gdp.real(country='united_states,germany,japan', provider='econdb')
         """  # noqa: E501
 
         return self._run(

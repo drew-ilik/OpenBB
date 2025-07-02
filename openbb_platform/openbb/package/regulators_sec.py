@@ -65,13 +65,8 @@ class ROUTER_regulators_sec(Container):
 
         CikMap
         ------
-        cik : Optional[Union[int, str]]
+        cik : Optional[Union[str, int]]
             Central Index Key (CIK) for the requested entity.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.cik_map(symbol='MSFT', provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -158,11 +153,6 @@ class ROUTER_regulators_sec(Container):
             Cover page information, if available. (provider: sec)
         document_urls : Optional[list]
             list of files associated with the filing. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.filing_headers(url='https://www.sec.gov/Archives/edgar/data/317540/000119312524076556/d645509ddef14a.htm', provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -224,11 +214,6 @@ class ROUTER_regulators_sec(Container):
             URL of the downloaded file. (provider: sec)
         content : Optional[str]
             Raw content of the HTM/HTML file. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.htm_file(url='https://www.sec.gov/Archives/edgar/data/1723690/000119312525030074/d866336dex991.htm', provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -288,14 +273,8 @@ class ROUTER_regulators_sec(Container):
         ------------------
         name : Optional[str]
             The name of the institution. (provider: sec)
-        cik : Optional[Union[int, str]]
+        cik : Optional[Union[str, int]]
             Central Index Key (CIK) (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.institutions_search(provider='sec')
-        >>> obb.regulators.sec.institutions_search(query='blackstone real estate', provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -360,11 +339,6 @@ class ROUTER_regulators_sec(Container):
             The identifier associated with the release. (provider: sec)
         link : Optional[str]
             URL to the release. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.rss_litigation(provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -426,29 +400,6 @@ class ROUTER_regulators_sec(Container):
         -----------
         files : Optional[list[str]]
             Dictionary of URLs to SEC Schema Files (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.schema_files(provider='sec')
-        >>> # Get a list of schema files.
-        >>> data = obb.regulators.sec.schema_files().results
-        >>> data.files[0]
-        >>> 'https://xbrl.fasb.org/us-gaap/'
-        >>> # The directory structure can be navigated by constructing a URL from the 'results' list.
-        >>> url = data.files[0]+data.files[-1]
-        >>> # The URL base will always be the 0 position in the list, feed  the URL back in as a parameter.
-        >>> obb.regulators.sec.schema_files(url=url).results.files
-        >>> ['https://xbrl.fasb.org/us-gaap/2024/'
-        >>> 'USGAAP2024Filelist.xml'
-        >>> 'dis/'
-        >>> 'dqcrules/'
-        >>> 'ebp/'
-        >>> 'elts/'
-        >>> 'entire/'
-        >>> 'meta/'
-        >>> 'stm/'
-        >>> 'us-gaap-2024.zip']
         """  # noqa: E501
 
         return self._run(
@@ -514,12 +465,6 @@ class ROUTER_regulators_sec(Container):
             Industry title. (provider: sec)
         office : Optional[str]
             Reporting office within the Corporate Finance Office (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.sic_search(provider='sec')
-        >>> obb.regulators.sec.sic_search(query='real estate investment trusts', provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -587,11 +532,6 @@ class ROUTER_regulators_sec(Container):
         ---------
         symbol : Optional[str]
             Symbol representing the entity requested in the data. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.regulators.sec.symbol_map(query='0000789019', provider='sec')
         """  # noqa: E501
 
         return self._run(

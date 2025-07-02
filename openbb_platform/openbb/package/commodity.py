@@ -131,14 +131,6 @@ class ROUTER_commodity(Container):
             Value of the data.
         unit : Optional[str]
             Unit or scale of the data.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # Get the EIA's Weekly Petroleum Status Report.
-        >>> obb.commodity.petroleum_status_report(provider='eia')
-        >>> # Select the category of data, and filter for a specific table within the report.
-        >>> obb.commodity.petroleum_status_report(category='weekly_estimates', table='imports', provider='eia')
         """  # noqa: E501
 
         return self._run(
@@ -332,14 +324,6 @@ class ROUTER_commodity(Container):
             Value of the data.
         unit : Optional[str]
             Unit or scale of the data.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # Get the EIA's Short Term Energy Outlook.
-        >>> obb.commodity.short_term_energy_outlook(provider='eia')
-        >>> # Select the specific table of data from the STEO. Table 03d is World Crude Oil Production.
-        >>> obb.commodity.short_term_energy_outlook(table='03d', provider='eia')
         """  # noqa: E501
 
         return self._run(

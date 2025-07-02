@@ -83,12 +83,6 @@ class ROUTER_fixedincome_spreads(Container):
             The date of the data.
         rate : Optional[float]
             TreasuryConstantMaturity Rate.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.fixedincome.spreads.tcm(provider='fred')
-        >>> obb.fixedincome.spreads.tcm(maturity='2y', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -173,12 +167,6 @@ class ROUTER_fixedincome_spreads(Container):
             The date of the data.
         rate : Optional[float]
             Selected Treasury Constant Maturity Rate.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.fixedincome.spreads.tcm_effr(provider='fred')
-        >>> obb.fixedincome.spreads.tcm_effr(maturity='10y', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -263,12 +251,6 @@ class ROUTER_fixedincome_spreads(Container):
             The date of the data.
         rate : Optional[float]
             SelectedTreasuryBill Rate.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.fixedincome.spreads.treasury_effr(provider='fred')
-        >>> obb.fixedincome.spreads.treasury_effr(maturity='6m', provider='fred')
         """  # noqa: E501
 
         return self._run(

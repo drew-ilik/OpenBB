@@ -164,16 +164,6 @@ class ROUTER_fixedincome(Container):
             The maturity range of the bond index. Only applicable when 'index' is 'yield_curve'. (provider: fred)
         title : Optional[str]
             The title of the index. (provider: fred)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # The default state for FRED are series for constructing the US Corporate Bond Yield Curve.
-        >>> obb.fixedincome.bond_indices(provider='fred')
-        >>> # Multiple indices, from within the same 'category', can be requested.
-        >>> obb.fixedincome.bond_indices(category='high_yield', index='us,europe,emerging', index_type='total_return', provider='fred')
-        >>> # From FRED, there are three main categories, 'high_yield', 'us', and 'emerging_markets'. Emerging markets is a broad category.
-        >>> obb.fixedincome.bond_indices(category='emerging_markets', index='corporate,private_sector,public_sector', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -344,14 +334,6 @@ class ROUTER_fixedincome(Container):
             Name of the index.
         rate : float
             Mortgage rate.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # The default state for FRED are the primary mortgage indices from Optimal Blue.
-        >>> obb.fixedincome.mortgage_indices(provider='fred')
-        >>> # Multiple indices can be requested.
-        >>> obb.fixedincome.mortgage_indices(index='jumbo_30y,conforming_30y,conforming_15y', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -524,11 +506,6 @@ class ROUTER_fixedincome(Container):
             180-Day Average SOFR (provider: fred)
         index : Optional[float]
             SOFR index as 2018-04-02 = 1 (provider: fred)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.fixedincome.sofr(provider='fred')
         """  # noqa: E501
 
         simplefilter("always", DeprecationWarning)

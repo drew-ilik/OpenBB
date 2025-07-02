@@ -115,12 +115,6 @@ class ROUTER_commodity_price(Container):
             Price of the commodity.
         unit : Optional[str]
             Unit of the commodity price.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.commodity.price.spot(provider='fred')
-        >>> obb.commodity.price.spot(provider='fred', commodity='wti')
         """  # noqa: E501
 
         return self._run(

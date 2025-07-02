@@ -57,9 +57,9 @@ class ROUTER_economy(Container):
     def available_indicators(
         self,
         provider: Annotated[
-            Optional[Literal["econdb"]],
+            Optional[Literal["econdb", "imf"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: econdb."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: econdb, imf."
             ),
         ] = None,
         **kwargs
@@ -131,11 +131,6 @@ class ROUTER_economy(Container):
             The symbol of the child data, if any. (provider: imf)
         unit : Optional[str]
             The unit of the data. (provider: imf)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.available_indicators(provider='econdb')
         """  # noqa: E501
 
         return self._run(
@@ -145,7 +140,7 @@ class ROUTER_economy(Container):
                     "provider": self._get_provider(
                         provider,
                         "economy.available_indicators",
-                        ("econdb",),
+                        ("econdb", "imf"),
                     )
                 },
                 standard_params={},
@@ -163,11 +158,7 @@ class ROUTER_economy(Container):
         provider: Annotated[
             Optional[Literal["ecb", "fred"]],
             OpenBBField(
-<<<<<<< Updated upstream
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fred."
-=======
                 description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: ecb, fred."
->>>>>>> Stashed changes
             ),
         ] = None,
         **kwargs
@@ -177,9 +168,13 @@ class ROUTER_economy(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fred.
-        country : Literal['argentina', 'australia', 'austria', 'belgium', 'brazil', 'canada', 'chile', 'china', 'colombia', 'costa_rica', 'czechia', 'denmark', 'estonia', 'finland', 'france', 'germany', 'greece', 'hungary', 'iceland', 'india', 'indonesia', 'ireland', 'israel', 'italy', 'japan', 'korea', 'latvia', 'lithuania', 'luxembourg', 'mexico', 'netherlands', 'new_zealand', 'norway', 'poland', 'portugal', 'russia', 'saudi_arabia', 'slovak_republic', 'slovenia', 'south_africa', 'spain', 'sweden', 'switzerland', 'turkey', 'united_kingdom', 'united_states', 'g7', 'g20']
-            The country to get data. Enter as a 3-letter ISO country code, default is USA. (provider: fred)
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: ecb, fred.
+        report_type : Literal['main', 'summary', 'services', 'investment_income', 'direct_investment', 'portfolio_investment', 'other_investment']
+            The report type, the level of detail in the data. (provider: ecb)
+        frequency : Literal['monthly', 'quarterly']
+            The frequency of the data.  Monthly is valid only for ['main', 'summary']. (provider: ecb)
+        country : str
+            The country/region of the data.  This parameter will override the 'report_type' parameter. (provider: ecb)
         start_date : Optional[date]
             Start date of the data, in YYYY-MM-DD format. (provider: fred)
         end_date : Optional[date]
@@ -203,48 +198,6 @@ class ROUTER_economy(Container):
         -----------------
         period : Optional[date]
             The date representing the beginning of the reporting period.
-<<<<<<< Updated upstream
-        balance_percent_of_gdp : Optional[float]
-            Current Account Balance as Percent of GDP
-        balance_total : Optional[float]
-            Current Account Total Balance (USD)
-        balance_total_services : Optional[float]
-            Current Account Total Services Balance (USD)
-        balance_total_secondary_income : Optional[float]
-            Current Account Total Secondary Income Balance (USD)
-        balance_total_goods : Optional[float]
-            Current Account Total Goods Balance (USD)
-        balance_total_primary_income : Optional[float]
-            Current Account Total Primary Income Balance (USD)
-        credits_services_percent_of_goods_and_services : Optional[float]
-            Current Account Credits Services as Percent of Goods and Services
-        credits_services_percent_of_current_account : Optional[float]
-            Current Account Credits Services as Percent of Current Account
-        credits_total_services : Optional[float]
-            Current Account Credits Total Services (USD)
-        credits_total_goods : Optional[float]
-            Current Account Credits Total Goods (USD)
-        credits_total_primary_income : Optional[float]
-            Current Account Credits Total Primary Income (USD)
-        credits_total_secondary_income : Optional[float]
-            Current Account Credits Total Secondary Income (USD)
-        credits_total : Optional[float]
-            Current Account Credits Total (USD)
-        debits_services_percent_of_goods_and_services : Optional[float]
-            Current Account Debits Services as Percent of Goods and Services
-        debits_services_percent_of_current_account : Optional[float]
-            Current Account Debits Services as Percent of Current Account
-        debits_total_services : Optional[float]
-            Current Account Debits Total Services (USD)
-        debits_total_goods : Optional[float]
-            Current Account Debits Total Goods (USD)
-        debits_total_primary_income : Optional[float]
-            Current Account Debits Total Primary Income (USD)
-        debits_total : Optional[float]
-            Current Account Debits Total (USD)
-        debits_total_secondary_income : Optional[float]
-            Current Account Debits Total Secondary Income (USD)
-=======
         current_account : Optional[float]
             Current Account Balance (Billions of EUR)
         goods : Optional[float]
@@ -459,17 +412,6 @@ class ROUTER_economy(Container):
             Secondary Income Balance (Billions of EUR)
         capital_account_balance : Optional[float]
             Capital Account Balance (Billions of EUR)
->>>>>>> Stashed changes
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.balance_of_payments(provider='fred')
-        >>> obb.economy.balance_of_payments(provider='fred', country='brazil')
-        >>> obb.economy.balance_of_payments(provider='ecb')
-        >>> obb.economy.balance_of_payments(report_type='summary', provider='ecb')
-        >>> # The `country` parameter will override the `report_type`.
-        >>> obb.economy.balance_of_payments(country='united_states', provider='ecb')
         """  # noqa: E501
 
         return self._run(
@@ -559,11 +501,7 @@ class ROUTER_economy(Container):
         provider: Annotated[
             Optional[Literal["fmp", "nasdaq", "tradingeconomics"]],
             OpenBBField(
-<<<<<<< Updated upstream
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, tradingeconomics."
-=======
                 description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, nasdaq, tradingeconomics."
->>>>>>> Stashed changes
             ),
         ] = None,
         **kwargs
@@ -573,7 +511,7 @@ class ROUTER_economy(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, tradingeconomics.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, nasdaq, tradingeconomics.
         start_date : Union[date, None, str]
             Start date of the data, in YYYY-MM-DD format.
         end_date : Union[date, None, str]
@@ -619,15 +557,6 @@ class ROUTER_economy(Container):
             Currency of the data.
         unit : Optional[str]
             Unit of the data.
-<<<<<<< Updated upstream
-        consensus : Optional[Union[str, float]]
-            Average forecast among a representative group of economists.
-        previous : Optional[Union[float, str]]
-            Value for the previous period after the revision (if revision is applicable).
-        revised : Optional[Union[float, str]]
-            Revised previous value, if applicable.
-        actual : Optional[Union[str, float]]
-=======
         consensus : Optional[Union[float, str]]
             Average forecast among a representative group of economists.
         previous : Optional[Union[float, str]]
@@ -635,7 +564,6 @@ class ROUTER_economy(Container):
         revised : Optional[Union[float, str]]
             Revised previous value, if applicable.
         actual : Optional[Union[float, str]]
->>>>>>> Stashed changes
             Latest released value.
         change : Optional[float]
             Value change since previous. (provider: fmp)
@@ -648,7 +576,7 @@ class ROUTER_economy(Container):
             Created at timestamp. (provider: fmp)
         description : Optional[str]
             Event description. (provider: nasdaq)
-        forecast : Optional[Union[float, str]]
+        forecast : Optional[Union[str, float]]
             TradingEconomics projections. (provider: tradingeconomics)
         reference : Optional[str]
             Abbreviated period for which released data refers to. (provider: tradingeconomics)
@@ -666,15 +594,6 @@ class ROUTER_economy(Container):
             TradingEconomics URL path. (provider: tradingeconomics)
         source_url : Optional[str]
             Source URL. (provider: tradingeconomics)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # By default, the calendar will be forward-looking.
-        >>> obb.economy.calendar(provider='fmp')
-        >>> obb.economy.calendar(provider='fmp', start_date='2020-03-01', end_date='2020-03-31')
-        >>> # By default, the calendar will be forward-looking.
-        >>> obb.economy.calendar(provider='nasdaq')
         """  # noqa: E501
 
         return self._run(
@@ -1033,18 +952,6 @@ class ROUTER_economy(Container):
             Change in SOMA holdings from the prior week (Thousands of $USD). (provider: federal_reserve)
         change_prior_year : Optional[float]
             Change in SOMA holdings from the prior year (Thousands of $USD). (provider: federal_reserve)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # The default is the latest Treasury securities held by the Federal Reserve.
-        >>> obb.economy.central_bank_holdings(provider='federal_reserve')
-        >>> # Get historical summaries of the Fed's holdings.
-        >>> obb.economy.central_bank_holdings(provider='federal_reserve', summary=True)
-        >>> # Get the balance sheet holdings as-of a historical date.
-        >>> obb.economy.central_bank_holdings(provider='federal_reserve', date='2019-05-21')
-        >>> # Use the `holding_type` parameter to select Agency securities, or specific categories or Treasury securities.
-        >>> obb.economy.central_bank_holdings(provider='federal_reserve', holding_type='agency_debts')
         """  # noqa: E501
 
         return self._run(
@@ -1137,12 +1044,6 @@ class ROUTER_economy(Container):
             CLI value
         country : str
             Country for the CLI value.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.composite_leading_indicator(provider='oecd')
-        >>> obb.economy.composite_leading_indicator(country='all', provider='oecd', growth_rate=True)
         """  # noqa: E501
 
         return self._run(
@@ -1270,13 +1171,6 @@ class ROUTER_economy(Container):
             Current account balance as a percent (normalized) of GDP.
         jobless_rate : Optional[float]
             Unemployment rate, as a normalized percent.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.country_profile(provider='econdb', country='united_kingdom')
-        >>> # Enter the country as the full name, or iso code. If `latest` is False, the complete history for each series is returned.
-        >>> obb.economy.country_profile(country='united_states,jp', latest=False, provider='econdb')
         """  # noqa: E501
 
         return self._run(
@@ -1390,13 +1284,6 @@ class ROUTER_economy(Container):
             CPI index value or period change.
         expenditure : Optional[str]
             Expenditure component of CPI. (provider: oecd)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.cpi(country='japan,china,turkey', provider='fred')
-        >>> # Use the `transform` parameter to define the reference period for the change in values. Default is YoY.
-        >>> obb.economy.cpi(country='united_states,united_kingdom', transform='period', provider='oecd')
         """  # noqa: E501
 
         return self._run(
@@ -1533,7 +1420,6 @@ class ROUTER_economy(Container):
                         },
                     }
                 },
-<<<<<<< Updated upstream
             )
         )
 
@@ -1640,13 +1526,6 @@ class ROUTER_economy(Container):
             Trade value.
         scale : Optional[str]
             Scale of the value.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.direction_of_trade(provider='imf', country='all', counterpart='china')
-        >>> # Select multiple countries or counterparts by entering a comma-separated list. The direction of trade can be 'exports', 'imports', 'balance', or 'all'.
-        >>> obb.economy.direction_of_trade(provider='imf', country='us', counterpart='world,eu', frequency='annual', direction='exports')
         """  # noqa: E501
 
         return self._run(
@@ -2178,8 +2057,6 @@ class ROUTER_economy(Container):
                         }
                     },
                 },
-=======
->>>>>>> Stashed changes
             )
         )
 
@@ -2238,11 +2115,6 @@ class ROUTER_economy(Container):
             The title of the data. (provider: econdb)
         footnote : Optional[str]
             The footnote for the data. (provider: econdb)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.export_destinations(provider='econdb', country='us')
         """  # noqa: E501
 
         return self._run(
@@ -2280,9 +2152,9 @@ class ROUTER_economy(Container):
         **kwargs
     ) -> OBBject:
         """Get FOMC documents by year and document type.
-        Optionally, download the file directly from the Federal Reserve's website.
 
         Source: https://www.federalreserve.gov/monetarypolicy/fomc_historical.htm
+
         Source: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
 
         This function does not return the typical OBBject response.
@@ -2294,8 +2166,6 @@ class ROUTER_economy(Container):
         If `as_choices` is True, the response is a list of valid Workspace parameter choices.
         Keys, `label` and `value`, correspond with the `doc_type` + `date`, and the `url`, respectively.
 
-        If `url` was provided, the response is a `dict[str, Any]` with keys `filename`, `content`, and `data_format`.
-
 
         Parameters
         ----------
@@ -2304,13 +2174,11 @@ class ROUTER_economy(Container):
         year : Optional[int]
             The year of FOMC documents to retrieve. If None, all years since 1959 are returned. (provider: federal_reserve)
         document_type : Optional[str]
-            Filter by document type. Default is all. Choose from: all, monetary_policy, minutes, projections, materials, press_release, press_conference, conference_call, agenda, transcript, speaker_key, beige_book, teal_book, green_book, blue_book, red_book (provider: federal_reserve)
+            Filter by document type. Default is all. Choose from: all, monetary_policy, minutes, projections, materials, press_release, press_conference, agenda, transcript, speaker_key, beige_book, teal_book, green_book, blue_book, red_book (provider: federal_reserve)
         pdf_only : bool
             Whether to return as a list with only the PDF documents. Default is False. (provider: federal_reserve)
         as_choices : bool
             Whether to return cast as a list of valid Workspace parameter choices. Leave as False for typical use. (provider: federal_reserve)
-        url : Optional[str]
-            Download a document from the supplied URL. When provided, all other parameters are ignored. Content is returned as a base64 encoded string. (provider: federal_reserve)
 
         Returns
         -------
@@ -2330,17 +2198,6 @@ class ROUTER_economy(Container):
         -------------
         content : Optional[Any]
             The content of request results. If `url` was provided, the content is a dictionary with keys `filename` and `content`. Otherwise, it is a list of dictionaries with a mapping of FOMC documents to URLs. The endpoint response will not be an OBBject.results object, but the content directly. (provider: federal_reserve)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.fomc_documents(provider='federal_reserve')
-        >>> # Filter all documents by year.
-        >>> obb.economy.fomc_documents(provider='federal_reserve', year=2022)
-        >>> # Filter all documents by year and document type.
-        >>> obb.economy.fomc_documents(provider='federal_reserve', year=2022, document_type='minutes')
-        >>> # The `url` parameter will override all other parameters to download the document. The response will be a dictionary with keys `filename`, `content`, and `data_format`. PDF content will be a base64 encoded string of the document.
-        >>> obb.economy.fomc_documents(provider='federal_reserve', url='https://www.federalreserve.gov/monetarypolicy/files/fomcminutes20220126.pdf')
         """  # noqa: E501
 
         return self._run(
@@ -2456,10 +2313,6 @@ class ROUTER_economy(Container):
                                         "label": "Press Conference",
                                         "value": "press_conference",
                                     },
-                                    {
-                                        "label": "Conference Call",
-                                        "value": "conference_call",
-                                    },
                                     {"label": "Agenda", "value": "agenda"},
                                     {"label": "Transcript", "value": "transcript"},
                                     {"label": "Speaker Key", "value": "speaker_key"},
@@ -2487,24 +2340,6 @@ class ROUTER_economy(Container):
                                 "value": True,
                                 "type": "boolean",
                                 "show": False,
-                            }
-                        }
-                    },
-                    "url": {
-                        "federal_reserve": {
-                            "x-widget_config": {
-                                "type": "endpoint",
-                                "paramName": "url",
-                                "optionsEndpoint": "api/v1/economy/fomc_documents",
-                                "optionsParams": {
-                                    "document_type": "$document_type",
-                                    "year": "$year",
-                                    "pdf_only": True,
-                                    "as_choices": True,
-                                    "provider": "federal_reserve",
-                                },
-                                "show": False,
-                                "roles": ["fileSelector"],
                             }
                         }
                     },
@@ -2653,13 +2488,6 @@ class ROUTER_economy(Container):
             The obersvation value. The units are defined in the search results by series ID. (provider: fred)
         series_id : Optional[str]
             The individual series ID for the region. (provider: fred)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.fred_regional(symbol='NYICLAIMS', provider='fred')
-        >>> # With a date, time series data is returned.
-        >>> obb.economy.fred_regional(symbol='NYICLAIMS', start_date='2021-01-01', end_date='2021-12-31', limit=10, provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -2699,7 +2527,7 @@ class ROUTER_economy(Container):
             ),
         ] = None,
         date: Annotated[
-            Union[str, datetime.date, None, list[Union[str, datetime.date, None]]],
+            Union[datetime.date, str, None, list[Union[datetime.date, str, None]]],
             OpenBBField(
                 description="A specific date to get data for. Multiple comma separated items allowed for provider(s): fred."
             ),
@@ -2722,7 +2550,7 @@ class ROUTER_economy(Container):
             The ID of the release. Use `fred_search` to find releases.
         element_id : Optional[str]
             The element ID of a specific table in the release.
-        date : Union[str, date, None, list[Union[str, date, None]]]
+        date : Union[date, str, None, list[Union[date, str, None]]]
             A specific date to get data for. Multiple comma separated items allowed for provider(s): fred.
 
         Returns
@@ -2761,16 +2589,6 @@ class ROUTER_economy(Container):
             The name of the series.
         value : Optional[float]
             The reported value of the series.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # Get the top-level elements of a release by not supplying an element ID.
-        >>> obb.economy.fred_release_table(release_id='50', provider='fred')
-        >>> # Drill down on a specific section of the release.
-        >>> obb.economy.fred_release_table(release_id='50', element_id='4880', provider='fred')
-        >>> # Drill down on a specific table of the release.
-        >>> obb.economy.fred_release_table(release_id='50', element_id='4881', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -2861,11 +2679,7 @@ class ROUTER_economy(Container):
 
         FredSearch
         ----------
-<<<<<<< Updated upstream
-        release_id : Optional[Union[int, str]]
-=======
-        release_id : Optional[Union[str, int]]
->>>>>>> Stashed changes
+        release_id : Optional[str]
             The release ID for queries.
         series_id : Optional[str]
             The series ID for the item in the release.
@@ -2909,19 +2723,6 @@ class ROUTER_economy(Container):
             If the release is a press release.
         url : Optional[str]
             URL to the release.
-        popularity : Optional[int]
-            Popularity of the series (provider: fred)
-        group_popularity : Optional[int]
-            Group popularity of the release (provider: fred)
-        region_type : Optional[str]
-            The region type of the series. (provider: fred)
-        series_group : Optional[Union[str, int]]
-            The series group ID of the series. This value is used to query for regional data. (provider: fred)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.fred_search(provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -3002,15 +2803,12 @@ class ROUTER_economy(Container):
             OpenBBField(
                 description="Whether to create a chart or not, by default False."
             ),
-<<<<<<< Updated upstream
-=======
         ] = False,
         provider: Annotated[
             Optional[Literal["fred", "intrinio"]],
             OpenBBField(
                 description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fred, intrinio."
             ),
->>>>>>> Stashed changes
         ] = None,
         **kwargs
     ) -> OBBject:
@@ -3069,6 +2867,8 @@ class ROUTER_economy(Container):
             Returns all pages of data from the API call at once. (provider: intrinio)
         sleep : Optional[float]
             Time to sleep between requests to avoid rate limiting. (provider: intrinio)
+        chart : bool
+            Whether to create a chart or not, by default False.
 
         Returns
         -------
@@ -3090,15 +2890,6 @@ class ROUTER_economy(Container):
             The date of the data.
         value : Optional[float]
             Value of the index. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.fred_series(symbol='NFCI', provider='fred')
-        >>> # Multiple series can be passed in as a list.
-        >>> obb.economy.fred_series(symbol='NFCI,STLFSI4', provider='fred')
-        >>> # Use the `transform` parameter to transform the data as change, log, or percent change.
-        >>> obb.economy.fred_series(symbol='CBBTCUSD', transform='pc1', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -3118,10 +2909,7 @@ class ROUTER_economy(Container):
                     "limit": limit,
                 },
                 extra_params=kwargs,
-<<<<<<< Updated upstream
-=======
                 chart=chart,
->>>>>>> Stashed changes
                 info={
                     "symbol": {
                         "fred": {"multiple_items_allowed": True, "choices": None}
@@ -3255,13 +3043,6 @@ class ROUTER_economy(Container):
 
         value : Optional[float]
             Share price index value.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.house_price_index(provider='oecd')
-        >>> # Multiple countries can be passed in as a list.
-        >>> obb.economy.house_price_index(country='united_kingdom,germany', frequency='quarter', provider='oecd')
         """  # noqa: E501
 
         return self._run(
@@ -3419,13 +3200,6 @@ class ROUTER_economy(Container):
             Country for which interest rate is given
         value : Optional[float]
             Immediate interest rates, call money, interbank rate.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.immediate_interest_rate(provider='oecd')
-        >>> # Multiple countries can be passed in as a list.
-        >>> obb.economy.immediate_interest_rate(country='united_kingdom,germany', frequency='monthly', provider='oecd')
         """  # noqa: E501
 
         simplefilter("always", DeprecationWarning)
@@ -3531,106 +3305,84 @@ class ROUTER_economy(Container):
             OpenBBField(description="End date of the data, in YYYY-MM-DD format."),
         ] = None,
         provider: Annotated[
-            Optional[Literal["econdb"]],
+            Optional[Literal["econdb", "imf"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: econdb."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: econdb, imf."
             ),
         ] = None,
         **kwargs
     ) -> OBBject:
         """Get economic indicators by country and indicator.
 
-            Parameters
-            ----------
-            provider : str
-                The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: econdb, imf.
-            country : Union[str, None, list[Optional[str]]]
-                The country to get data. The country represented by the indicator, if available. Multiple comma separated items allowed for provider(s): econdb, imf.
-                Choices for imf: 'all', 'afghanistan', 'albania', 'algeria', 'american_samoa', 'angola', 'anguilla', 'antigua_and_barbuda', 'argentina', 'armenia', 'aruba', 'australia', 'austria', 'azerbaijan', 'bahamas', 'bahrain', 'bangladesh', 'barbados', 'belarus', 'belgium', 'belize', 'benin', 'bermuda', 'bhutan', 'bolivia', 'bosnia_and_herzegovina', 'botswana', 'brazil', 'brunei_darussalam', 'bulgaria', 'burkina_faso', 'burundi', 'cabo_verde', 'cambodia', 'cameroon', 'canada', 'central_african_republic', 'chad', 'chile', 'hong_kong', 'macao', 'china', 'colombia', 'comoros', 'democratic_republic_of_the_congo', 'congo', 'costa_rica', 'ivory_coast', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech_republic', 'denmark', 'djibouti', 'dominica', 'dominican_republic', 'ecuador', 'egypt', 'el_salvador', 'equatorial_guinea', 'eritrea', 'estonia', 'eswatini', 'ethiopia', 'falkland_islands', 'faroe_islands', 'fiji', 'finland', 'france', 'french_polynesia', 'gabon', 'gambia', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'greenland', 'grenada', 'guam', 'guatemala', 'guinea', 'guyana', 'haiti', 'vatican_city_state', 'honduras', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'kiribati', 'north_korea', 'south_korea', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'lesotho', 'liberia', 'libya', 'lithuania', 'luxembourg', 'madagascar', 'malawi', 'malaysia', 'maldives', 'mali', 'malta', 'marshall_islands', 'mauritania', 'mauritius', 'mexico', 'micronesia', 'moldova', 'mongolia', 'montenegro', 'montserrat', 'morocco', 'mozambique', 'myanmar', 'namibia', 'nauru', 'nepal', 'antilles', 'netherlands', 'new_caledonia', 'new_zealand', 'nicaragua', 'niger', 'nigeria', 'north_macedonia', 'norway', 'oman', 'pakistan', 'palau', 'panama', 'papua_new_guinea', 'paraguay', 'peru', 'philippines', 'poland', 'portugal', 'qatar', 'romania', 'russia', 'rwanda', 'samoa', 'san_marino', 'sao_tome_and_principe', 'saudi_arabia', 'senegal', 'serbia_and_montenegro', 'serbia', 'seychelles', 'sierra_leone', 'singapore', 'sint_maarten', 'slovakia', 'slovenia', 'solomon_islands', 'somalia', 'south_africa', 'south_sudan', 'spain', 'sri_lanka', 'saint_kitts_and_nevis', 'saint_lucia', 'saint_vincent_and_the_grenadines', 'sudan', 'suriname', 'sweden', 'switzerland', 'syria', 'taiwan', 'tajikistan', 'tanzania', 'thailand', 'timor-leste', 'togo', 'tonga', 'trinidad_and_tobago', 'tunisia', 'turkey', 'turkmenistan', 'tuvalu', 'uganda', 'ukraine', 'united_arab_emirates', 'united_kingdom', 'united_states', 'uruguay', 'uzbekistan', 'vanuatu', 'venezuela', 'viet_nam', 'palestine', 'yemen', 'zambia', 'zimbabwe', 'euro_area', 'europe', 'european_union', 'unspecified'
-            start_date : Union[date, None, str]
-                Start date of the data, in YYYY-MM-DD format.
-            end_date : Union[date, None, str]
-                End date of the data, in YYYY-MM-DD format.
-            symbol : Optional[str]
-                Symbol to get data for. The base symbol for the indicator (e.g. GDP, CPI, etc.). Use `available_indicators()` to get a list of available symbols. Multiple comma separated items allowed. (provider: econdb)
-            transform : Optional[Literal['toya', 'tpop', 'tusd', 'tpgp']]
-                The transformation to apply to the data, default is None.
+        Parameters
+        ----------
+        provider : str
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: econdb, imf.
+        country : Union[str, None, list[Optional[str]]]
+            The country to get data. The country represented by the indicator, if available. Multiple comma separated items allowed for provider(s): econdb, imf.
+            Choices for imf: 'all', 'afghanistan', 'albania', 'algeria', 'american_samoa', 'angola', 'anguilla', 'antigua_and_barbuda', 'argentina', 'armenia', 'aruba', 'australia', 'austria', 'azerbaijan', 'bahamas', 'bahrain', 'bangladesh', 'barbados', 'belarus', 'belgium', 'belize', 'benin', 'bermuda', 'bhutan', 'bolivia', 'bosnia_and_herzegovina', 'botswana', 'brazil', 'brunei_darussalam', 'bulgaria', 'burkina_faso', 'burundi', 'cabo_verde', 'cambodia', 'cameroon', 'canada', 'central_african_republic', 'chad', 'chile', 'hong_kong', 'macao', 'china', 'colombia', 'comoros', 'democratic_republic_of_the_congo', 'congo', 'costa_rica', 'ivory_coast', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech_republic', 'denmark', 'djibouti', 'dominica', 'dominican_republic', 'ecuador', 'egypt', 'el_salvador', 'equatorial_guinea', 'eritrea', 'estonia', 'eswatini', 'ethiopia', 'falkland_islands', 'faroe_islands', 'fiji', 'finland', 'france', 'french_polynesia', 'gabon', 'gambia', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'greenland', 'grenada', 'guam', 'guatemala', 'guinea', 'guyana', 'haiti', 'vatican_city_state', 'honduras', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'kiribati', 'north_korea', 'south_korea', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'lesotho', 'liberia', 'libya', 'lithuania', 'luxembourg', 'madagascar', 'malawi', 'malaysia', 'maldives', 'mali', 'malta', 'marshall_islands', 'mauritania', 'mauritius', 'mexico', 'micronesia', 'moldova', 'mongolia', 'montenegro', 'montserrat', 'morocco', 'mozambique', 'myanmar', 'namibia', 'nauru', 'nepal', 'antilles', 'netherlands', 'new_caledonia', 'new_zealand', 'nicaragua', 'niger', 'nigeria', 'north_macedonia', 'norway', 'oman', 'pakistan', 'palau', 'panama', 'papua_new_guinea', 'paraguay', 'peru', 'philippines', 'poland', 'portugal', 'qatar', 'romania', 'russia', 'rwanda', 'samoa', 'san_marino', 'sao_tome_and_principe', 'saudi_arabia', 'senegal', 'serbia_and_montenegro', 'serbia', 'seychelles', 'sierra_leone', 'singapore', 'sint_maarten', 'slovakia', 'slovenia', 'solomon_islands', 'somalia', 'south_africa', 'south_sudan', 'spain', 'sri_lanka', 'saint_kitts_and_nevis', 'saint_lucia', 'saint_vincent_and_the_grenadines', 'sudan', 'suriname', 'sweden', 'switzerland', 'syria', 'taiwan', 'tajikistan', 'tanzania', 'thailand', 'timor-leste', 'togo', 'tonga', 'trinidad_and_tobago', 'tunisia', 'turkey', 'turkmenistan', 'tuvalu', 'uganda', 'ukraine', 'united_arab_emirates', 'united_kingdom', 'united_states', 'uruguay', 'uzbekistan', 'vanuatu', 'venezuela', 'viet_nam', 'palestine', 'yemen', 'zambia', 'zimbabwe', 'euro_area', 'europe', 'european_union', 'unspecified'
+        start_date : Union[date, None, str]
+            Start date of the data, in YYYY-MM-DD format.
+        end_date : Union[date, None, str]
+            End date of the data, in YYYY-MM-DD format.
+        symbol : Optional[str]
+            Symbol to get data for. The base symbol for the indicator (e.g. GDP, CPI, etc.). Use `available_indicators()` to get a list of available symbols. Multiple comma separated items allowed. (provider: econdb)
+        transform : Optional[Literal['toya', 'tpop', 'tusd', 'tpgp']]
+            The transformation to apply to the data, default is None.
 
-                    tpop: Change from previous period
-                    toya: Change from one year ago
-                    tusd: Values as US dollars
-                    tpgp: Values as a percent of GDP
+                tpop: Change from previous period
+                toya: Change from one year ago
+                tusd: Values as US dollars
+                tpgp: Values as a percent of GDP
 
-                    Only 'tpop' and 'toya' are applicable to all indicators. Applying transformations across multiple indicators/countries may produce unexpected results.
-                    This is because not all indicators are compatible with all transformations, and the original units and scale differ between entities.
-                    `tusd` should only be used where values are currencies. (provider: econdb)
-            frequency : Literal['annual', 'quarter', 'month']
-                The frequency of the data, default is 'quarter'. Only valid when 'symbol' is 'main'. (provider: econdb)
-            use_cache : bool
-                If True, the request will be cached for one day. Using cache is recommended to avoid needlessly requesting the same data. (provider: econdb)
+                Only 'tpop' and 'toya' are applicable to all indicators. Applying transformations across multiple indicators/countries may produce unexpected results.
+                This is because not all indicators are compatible with all transformations, and the original units and scale differ between entities.
+                `tusd` should only be used where values are currencies. (provider: econdb)
+        frequency : Literal['annual', 'quarter', 'month']
+            The frequency of the data, default is 'quarter'. Only valid when 'symbol' is 'main'. (provider: econdb)
+        use_cache : bool
+            If True, the request will be cached for one day. Using cache is recommended to avoid needlessly requesting the same data. (provider: econdb)
 
-            Returns
-            -------
-            OBBject
-                results : list[EconomicIndicators]
-                    Serializable results.
-                provider : Optional[str]
-                    Provider name.
-                warnings : Optional[list[Warning_]]
-                    list of warnings.
-                chart : Optional[Chart]
-                    Chart object.
-                extra : Dict[str, Any]
-                    Extra info.
+        Returns
+        -------
+        OBBject
+            results : list[EconomicIndicators]
+                Serializable results.
+            provider : Optional[str]
+                Provider name.
+            warnings : Optional[list[Warning_]]
+                list of warnings.
+            chart : Optional[Chart]
+                Chart object.
+            extra : Dict[str, Any]
+                Extra info.
 
-            EconomicIndicators
-            ------------------
-            date : date
-                The date of the data.
-            symbol_root : Optional[str]
-                The root symbol for the indicator (e.g. GDP).
-            symbol : Optional[str]
-                Symbol representing the entity requested in the data.
-            country : Optional[str]
-                The country represented by the data.
-            value : Optional[Union[int, float]]
+        EconomicIndicators
+        ------------------
+        date : date
+            The date of the data.
+        symbol_root : Optional[str]
+            The root symbol for the indicator (e.g. GDP).
+        symbol : Optional[str]
+            Symbol representing the entity requested in the data.
+        country : Optional[str]
+            The country represented by the data.
+        value : Optional[Union[float, int]]
 
-            unit : Optional[str]
-                The unit of the value. (provider: imf)
-            scale : Optional[str]
-                The scale of the value. (provider: imf)
-            table : Optional[str]
-                The name of the table associated with the symbol. (provider: imf)
-            level : Optional[int]
-                The indentation level of the data, relative to the table and symbol_root (provider: imf)
-            order : Optional[Union[int, float]]
-                Order of the data, relative to the table. (provider: imf)
-            reference_sector : Optional[str]
-                The reference sector for the data. (provider: imf)
-            title : Optional[str]
-                The title of the series associated with the symbol. (provider: imf)
-
-            Examples
-            --------
-            >>> from openbb import obb
-            >>> obb.economy.indicators(provider='econdb', symbol='PCOCO')
-            >>> # Enter the country as the full name, or iso code. Use `available_indicators()` to get a list of supported indicators from EconDB.
-            >>> obb.economy.indicators(symbol='CPI', country='united_states,jp', provider='econdb')
-            >>> # Use the `main` symbol to get the group of main indicators for a country.
-            >>> obb.economy.indicators(provider='econdb', symbol='main', country='eu')
-            >>> # When the provider is 'imf', the absence of a symbol will default to 'irfcl_top_lines'. Use 'IRFCL' to get all the data from the set of indicators.
-            >>> obb.economy.indicators(provider='imf')
-            >>> # When the provider is 'imf', complete tables are returned by using a 'preset'. Refer to the function's docstring for descriptions of each preset. When no country is supplied, the data is returned for all countries.
-            >>> obb.economy.indicators(provider='imf', symbol='gold_reserves')
-            >>> # When the provider is 'imf', multiple countries and symbols can be supplied. Enter countries as a two-letter ISO country code, or the country name in lower_snake_case.
-            >>> obb.economy.indicators(provider='imf', symbol='RAFA_USD,RAPFA_USD,RAFA_RAPFA_RO', country='us,china,jp,4f,gb', start_date='2010-01-01', end_date='2020-12-31', frequency='annual')
-            >>> # When the provider is 'imf', additional presets return the core Financial Soundness Indicators.
-        'fsi_core' -  Core FSIs
-        'fsi_encouraged_set' - Encouraged Set of FSIs,
-        'fsi_core_underlying' - Underlying data for the Core FSIs.
-        'fsi_other' - Additional/Other FSIs that are not in the Core or Encouraged Set.
-        'fsi_all' - all FSI data for a single country.
-            >>> obb.economy.indicators(provider='imf', symbol='fsi_encouraged_set', country='us,fr,gb', start_date='2022-01-01', end_date='2023-12-31', frequency='annual')
+        unit : Optional[str]
+            The unit of the value. (provider: imf)
+        scale : Optional[str]
+            The scale of the value. (provider: imf)
+        table : Optional[str]
+            The name of the table associated with the symbol. (provider: imf)
+        level : Optional[int]
+            The indentation level of the data, relative to the table and symbol_root (provider: imf)
+        order : Optional[Union[int, float]]
+            Order of the data, relative to the table. (provider: imf)
+        reference_sector : Optional[str]
+            The reference sector for the data. (provider: imf)
+        title : Optional[str]
+            The title of the series associated with the symbol. (provider: imf)
         """  # noqa: E501
 
         return self._run(
@@ -3640,7 +3392,7 @@ class ROUTER_economy(Container):
                     "provider": self._get_provider(
                         provider,
                         "economy.indicators",
-                        ("econdb",),
+                        ("econdb", "imf"),
                     )
                 },
                 standard_params={
@@ -3651,7 +3403,6 @@ class ROUTER_economy(Container):
                 extra_params=kwargs,
                 info={
                     "country": {
-<<<<<<< Updated upstream
                         "econdb": {"multiple_items_allowed": True, "choices": None},
                         "imf": {
                             "multiple_items_allowed": True,
@@ -3874,12 +3625,16 @@ class ROUTER_economy(Container):
                                 "unspecified",
                             ],
                         },
-=======
-                        "econdb": {"multiple_items_allowed": True, "choices": None}
->>>>>>> Stashed changes
                     },
                     "symbol": {
-                        "econdb": {"multiple_items_allowed": True, "choices": None}
+                        "econdb": {"multiple_items_allowed": True, "choices": None},
+                        "imf": {"multiple_items_allowed": True, "choices": None},
+                    },
+                    "frequency": {
+                        "imf": {
+                            "multiple_items_allowed": False,
+                            "choices": ["annual", "quarter", "month"],
+                        }
                     },
                 },
             )
@@ -3953,15 +3708,6 @@ class ROUTER_economy(Container):
             The interest rate value.
         country : Optional[str]
             Country for which the interest rate is given.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.interest_rates(provider='oecd')
-        >>> # For OECD, duration can be 'immediate', 'short', or 'long'. Default is 'short', which is the 3-month rate. Overnight interbank rate is 'immediate', and 10-year rate is 'long'.
-        >>> obb.economy.interest_rates(provider='oecd', country='all', duration='immediate', frequency='quarter')
-        >>> # Multiple countries can be passed in as a list.
-        >>> obb.economy.interest_rates(duration='long', country='united_kingdom,germany', frequency='monthly', provider='oecd')
         """  # noqa: E501
 
         return self._run(
@@ -4124,12 +3870,6 @@ class ROUTER_economy(Container):
             Interest rate (given as a whole number, i.e 10=10%)
         country : Optional[str]
             Country for which interest rate is given
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.long_term_interest_rate(provider='oecd')
-        >>> obb.economy.long_term_interest_rate(country='all', frequency='quarterly', provider='oecd')
         """  # noqa: E501
 
         simplefilter("always", DeprecationWarning)
@@ -4229,12 +3969,6 @@ class ROUTER_economy(Container):
             Value of other liquid deposits in billions.
         small_denomination_time_deposits : Optional[float]
             Value of small denomination time deposits in billions.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.money_measures(provider='federal_reserve')
-        >>> obb.economy.money_measures(adjusted=False, provider='federal_reserve')
         """  # noqa: E501
 
         return self._run(
@@ -4261,7 +3995,7 @@ class ROUTER_economy(Container):
     def pce(
         self,
         date: Annotated[
-            Union[str, datetime.date, None, list[Union[str, datetime.date, None]]],
+            Union[datetime.date, str, None, list[Union[datetime.date, str, None]]],
             OpenBBField(
                 description="A specific date to get data for. Default is the latest report. Multiple comma separated items allowed for provider(s): fred."
             ),
@@ -4280,7 +4014,7 @@ class ROUTER_economy(Container):
         ----------
         provider : str
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fred.
-        date : Union[str, date, None, list[Union[str, date, None]]]
+        date : Union[date, str, None, list[Union[date, str, None]]]
             A specific date to get data for. Default is the latest report. Multiple comma separated items allowed for provider(s): fred.
         category : Literal['personal_income', 'wages_by_industry', 'real_pce_percent_change', 'real_pce_quantity_index', 'pce_price_index', 'pce_dollars', 'real_pce_chained_dollars', 'pce_price_percent_change']
             The category to query. (provider: fred)
@@ -4319,13 +4053,6 @@ class ROUTER_economy(Container):
             The indentation level of the element. (provider: fred)
         line : Optional[int]
             The line number of the series in the table. (provider: fred)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.pce(provider='fred')
-        >>> # Get reports for multiple dates, entered as a comma-separated string.
-        >>> obb.economy.pce(provider='fred', date='2024-05-01,2024-04-01,2023-05-01', category='pce_price_index')
         """  # noqa: E501
 
         return self._run(
@@ -4385,7 +4112,7 @@ class ROUTER_economy(Container):
         port_code : Optional[str]
             Port code to filter results by a specific port. This parameter is ignored if `country` parameter is provided. To get a list of available ports, use `obb.economy.shipping.port_info()`. Multiple comma separated items allowed. (provider: imf)
         country : Optional[Literal['ABW', 'AGO', 'AIA', 'ALB', 'ARE', 'ARG', 'ASM', 'ATG', 'AUS', 'AZE', 'BEL', 'BEN', 'BES', 'BGD', 'BGR', 'BHR', 'BHS', 'BLM', 'BLZ', 'BRA', 'BRB', 'BRN', 'CAN', 'CHL', 'CHN', 'CIV', 'CMR', 'COD', 'COG', 'COK', 'COL', 'COM', 'CPV', 'CRI', 'CUB', 'CUW', 'CYM', 'CYP', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'ECU', 'EGY', 'ERI', 'ESP', 'EST', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIB', 'GIN', 'GLP', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GTM', 'GUF', 'GUM', 'GUY', 'HKG', 'HND', 'HRV', 'HTI', 'IDN', 'IND', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KHM', 'KIR', 'KNA', 'KOR', 'KWT', 'LBN', 'LBR', 'LBY', 'LCA', 'LKA', 'LTU', 'LVA', 'MAC', 'MAF', 'MAR', 'MDA', 'MDG', 'MDV', 'MEX', 'MHL', 'MLT', 'MMR', 'MNE', 'MNP', 'MOZ', 'MRT', 'MSR', 'MTQ', 'MUS', 'MYS', 'MYT', 'NAM', 'NCL', 'NGA', 'NIC', 'NLD', 'NOR', 'NRU', 'NZL', 'OMN', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRT', 'PYF', 'QAT', 'REU', 'ROU', 'RUS', 'SAU', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SOM', 'STP', 'SUR', 'SVN', 'SWE', 'SXM', 'SYC', 'SYR', 'TCA', 'TGO', 'THA', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TWN', 'TZA', 'UKR', 'URY', 'USA', 'VCT', 'VEN', 'VGB', 'VIR', 'VNM', 'VUT', 'WSM', 'YEM', 'ZAF']]
-            Country to focus on. Enter as a 3-letter ISO country code. This parameter supercedes `continent` if both are provided. (provider: imf)
+            Country to focus on. Enter as a 3-letter ISO country code. This parameter is overridden by `port_code` if both are provided. (provider: imf)
 
         Returns
         -------
@@ -4461,13 +4188,6 @@ class ROUTER_economy(Container):
             Total export volume (in metric tons) of dry bulk carriers entering the port at this date. (provider: imf)
         exports_roro : Optional[float]
             Total export volume (in metric tons) of Ro-Ro ships entering the port at this date. (provider: imf)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.port_volume(provider='econdb')
-        >>> # Get daily port calls and estimated trading volumes for specific ports Get the list of available ports with `openbb shipping port_info`
-        >>> obb.economy.port_volume(provider='imf', port_code='rotterdam,singapore')
         """  # noqa: E501
 
         simplefilter("always", DeprecationWarning)
@@ -9358,10 +9078,9 @@ class ROUTER_economy(Container):
                                     {"label": "Vanuatu", "value": "VUT"},
                                     {"label": "Venezuela", "value": "VEN"},
                                     {"label": "Vietnam", "value": "VNM"},
-                                    {"label": "World", "value": "WLD"},
                                     {"label": "Yemen", "value": "YEM"},
                                 ],
-                                "description": "Filter by country. This parameter supercedes `port_code` if both are provided.",
+                                "description": "Filter by country. This parameter is overridden by `port_code` if both are provided.",
                                 "style": {"popupWidth": 350},
                             }
                         }
@@ -9442,13 +9161,6 @@ class ROUTER_economy(Container):
             Title of the series' symbol. (provider: federal_reserve)
         value : Optional[Union[int, float]]
             Value of the data returned, in millions of USD if the `unit` parameter is 'value' else a normalized percent. (provider: federal_reserve)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.primary_dealer_fails(provider='federal_reserve')
-        >>> # Transform the data to be percentage totals by asset class
-        >>> obb.economy.primary_dealer_fails(provider='federal_reserve', unit='percent')
         """  # noqa: E501
 
         return self._run(
@@ -9549,12 +9261,6 @@ class ROUTER_economy(Container):
             Short name for the series. (provider: federal_reserve)
         title : Optional[str]
             Title of the series. (provider: federal_reserve)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.primary_dealer_positioning(provider='federal_reserve')
-        >>> obb.economy.primary_dealer_positioning(category='abs', provider='federal_reserve')
         """  # noqa: E501
 
         return self._run(
@@ -9667,15 +9373,6 @@ class ROUTER_economy(Container):
             Description of the item.
         value : Optional[float]
             Price, or change in price, per unit.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.retail_prices(provider='fred')
-        >>> # The price of eggs in the northeast census region.
-        >>> obb.economy.retail_prices(item='eggs', region='northeast', provider='fred')
-        >>> # The percentage change in price, from one-year ago, of various meats, US City Average.
-        >>> obb.economy.retail_prices(item='meats', transform='pc1', provider='fred')
         """  # noqa: E501
 
         return self._run(
@@ -9807,11 +9504,6 @@ class ROUTER_economy(Container):
             Total equity risk premium for the country.
         country_risk_premium : Optional[Annotated[float, Ge(ge=0)]]
             Country-specific risk premium.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.risk_premium(provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -9897,13 +9589,6 @@ class ROUTER_economy(Container):
 
         value : Optional[float]
             Share price index value.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.share_price_index(provider='oecd')
-        >>> # Multiple countries can be passed in as a list.
-        >>> obb.economy.share_price_index(country='united_kingdom,germany', frequency='quarter', provider='oecd')
         """  # noqa: E501
 
         return self._run(
@@ -10070,12 +9755,6 @@ class ROUTER_economy(Container):
             Interest rate (given as a whole number, i.e 10=10%)
         country : Optional[str]
             Country for which interest rate is given
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.short_term_interest_rate(provider='oecd')
-        >>> obb.economy.short_term_interest_rate(country='all', frequency='quarterly', provider='oecd')
         """  # noqa: E501
 
         simplefilter("always", DeprecationWarning)
@@ -10184,14 +9863,6 @@ class ROUTER_economy(Container):
             Country for which unemployment rate is given
         value : Optional[float]
             Unemployment rate, as a normalized percent.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.unemployment(provider='oecd')
-        >>> obb.economy.unemployment(country='all', frequency='quarter', provider='oecd')
-        >>> # Demographics for the statistics are selected with the `age` parameter.
-        >>> obb.economy.unemployment(country='all', frequency='quarter', age='total', provider='oecd')
         """  # noqa: E501
 
         return self._run(

@@ -118,17 +118,6 @@ class ROUTER_equity_ownership(Container):
             The fair market value of the holding of the particular class of security. The value reported for options is the fair market value of the underlying security with respect to the number of shares controlled. Values are rounded to the nearest US dollar and use the closing price of the last trading day of the calendar year or quarter.
         weight : Optional[float]
             The weight of the security relative to the market value of all securities in the filing , as a normalized percent. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.ownership.form_13f(symbol='NVDA', provider='sec')
-        >>> # Enter a date (calendar quarter ending) for a specific report.
-        >>> obb.equity.ownership.form_13f(symbol='BRK-A', date='2016-09-30', provider='sec')
-        >>> # Example finding Michael Burry's filings.
-        >>> cik = obb.regulators.sec.institutions_search("Scion Asset Management").results[0].cik
-        >>> # Use the `limit` parameter to return N number of reports from the most recent.
-        >>> obb.equity.ownership.form_13f(cik, limit=2).to_df()
         """  # noqa: E501
 
         return self._run(
@@ -231,12 +220,6 @@ class ROUTER_equity_ownership(Container):
             Additional comments on the transaction. (provider: fmp)
         url : Optional[str]
             Link to the transaction document. (provider: fmp)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.ownership.government_trades(symbol='AAPL', chamber='all', provider='fmp')
-        >>> obb.equity.ownership.government_trades(limit=500, chamber='all', provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -270,9 +253,9 @@ class ROUTER_equity_ownership(Container):
             int, OpenBBField(description="The number of data entries to return.")
         ] = 500,
         provider: Annotated[
-            Optional[Literal["fmp", "intrinio", "sec"]],
+            Optional[Literal["fmp", "intrinio", "sec", "tmx"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, sec."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, sec, tmx."
             ),
         ] = None,
         **kwargs
@@ -282,7 +265,7 @@ class ROUTER_equity_ownership(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, sec.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, sec, tmx.
         symbol : str
             Symbol to get data for.
         limit : int
@@ -299,6 +282,8 @@ class ROUTER_equity_ownership(Container):
             Field to sort by. (provider: intrinio)
         use_cache : bool
             Persist the data locally for future use. Default is True. Each form submission is an individual download and the SEC limits the number of concurrent downloads. This prevents the same file from being downloaded multiple times. (provider: sec)
+        summary : bool
+            Return a summary of the insider activity instead of the individuals. (provider: tmx)
 
         Returns
         -------
@@ -318,13 +303,13 @@ class ROUTER_equity_ownership(Container):
         --------------
         symbol : Optional[str]
             Symbol representing the entity requested in the data.
-        company_cik : Optional[Union[int, str]]
+        company_cik : Optional[Union[str, int]]
             CIK number of the company.
         filing_date : Optional[Union[date, datetime]]
             Filing date of the trade.
         transaction_date : Optional[date]
             Date of the transaction.
-        owner_cik : Optional[Union[int, str]]
+        owner_cik : Optional[Union[str, int]]
             Reporting individual's CIK.
         owner_name : Optional[str]
             Name of the reporting individual.
@@ -380,7 +365,7 @@ class ROUTER_equity_ownership(Container):
             Whether the owner is having a derivative transaction. (provider: intrinio)
         report_line_number : Optional[int]
             Report line number of the insider trading. (provider: intrinio)
-        form : Optional[Union[int, str]]
+        form : Optional[Union[str, int]]
             Form type. (provider: sec)
         other : Optional[bool]
             Whether the owner is classified as other. (provider: sec)
@@ -400,12 +385,20 @@ class ROUTER_equity_ownership(Container):
             Value of the securities owned after the transaction. (provider: sec)
         footnote : Optional[str]
             Footnote for the transaction. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.ownership.insider_trading(symbol='AAPL', provider='fmp')
-        >>> obb.equity.ownership.insider_trading(symbol='AAPL', limit=500, provider='intrinio')
+        period : Optional[str]
+            The period of the activity. Bucketed by three, six, and twelve months. (provider: tmx)
+        acquisition_or_deposition : Optional[str]
+            Whether the insider bought or sold the shares. (provider: tmx)
+        number_of_trades : Optional[int]
+            The number of shares traded over the period. (provider: tmx)
+        trade_value : Optional[float]
+            The value of the shares traded by the insider. (provider: tmx)
+        securities_bought : Optional[int]
+            The total number of shares bought by all insiders over the period. (provider: tmx)
+        securities_sold : Optional[int]
+            The total number of shares sold by all insiders over the period. (provider: tmx)
+        net_activity : Optional[int]
+            The total net activity by all insiders over the period. (provider: tmx)
         """  # noqa: E501
 
         return self._run(
@@ -415,7 +408,7 @@ class ROUTER_equity_ownership(Container):
                     "provider": self._get_provider(
                         provider,
                         "equity.ownership.insider_trading",
-                        ("fmp", "intrinio", "sec"),
+                        ("fmp", "intrinio", "sec", "tmx"),
                     )
                 },
                 standard_params={
@@ -567,11 +560,6 @@ class ROUTER_equity_ownership(Container):
             Put-call ratio on the previous reporting date. (provider: fmp)
         put_call_ratio_change : Optional[float]
             Change in the put-call ratio between the current and previous reporting dates. (provider: fmp)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.ownership.institutional(symbol='AAPL', provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -718,12 +706,6 @@ class ROUTER_equity_ownership(Container):
             Change in performance of the stock ownership.
         is_counted_for_performance : bool
             Is the stock ownership counted for performance.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.ownership.major_holders(symbol='AAPL', provider='fmp')
-        >>> obb.equity.ownership.major_holders(symbol='AAPL', page=0, provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -824,11 +806,6 @@ class ROUTER_equity_ownership(Container):
             Percentage of float held by institutions, as a normalized percent. (provider: yfinance)
         institutions_count : Optional[int]
             Number of institutions holding shares. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.ownership.share_statistics(symbol='AAPL', provider='fmp')
         """  # noqa: E501
 
         return self._run(

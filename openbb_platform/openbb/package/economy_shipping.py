@@ -26,6 +26,12 @@ class ROUTER_economy_shipping(Container):
     @validate
     def chokepoint_info(
         self,
+        chart: Annotated[
+            bool,
+            OpenBBField(
+                description="Whether to create a chart or not, by default False."
+            ),
+        ] = False,
         provider: Annotated[
             Optional[Literal["imf"]],
             OpenBBField(
@@ -42,6 +48,8 @@ class ROUTER_economy_shipping(Container):
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: imf.
         theme : Optional[Literal['dark', 'light']]
             Theme for the map. Only valid if `openbb-charting` is installed and `chart` parameter is set to `true`. Default is the 'chart_style' setting in `user_settings.json`, if available, otherwise 'dark'. (provider: imf)
+        chart : bool
+            Whether to create a chart or not, by default False.
 
         Returns
         -------
@@ -85,11 +93,6 @@ class ROUTER_economy_shipping(Container):
             Second dominant traded industries based on the volume of goods estimated to flow through the chokepoint. (provider: imf)
         industry_top3 : Optional[str]
             Third dominant traded industries based on the volume of goods estimated to flow through the chokepoint. (provider: imf)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.shipping.chokepoint_info(provider='imf')
         """  # noqa: E501
 
         return self._run(
@@ -104,6 +107,7 @@ class ROUTER_economy_shipping(Container):
                 },
                 standard_params={},
                 extra_params=kwargs,
+                chart=chart,
                 info={"theme": {"imf": {"x-widget_config": {"show": False}}}},
             )
         )
@@ -215,12 +219,6 @@ class ROUTER_economy_shipping(Container):
             Total trade volume (in metric tons) of dry bulk carriers transiting through the chokepoint at this date. (provider: imf)
         capacity_roro : Optional[float]
             Total trade volume (in metric tons) of Ro-Ro ships transiting through the chokepoint at this date. (provider: imf)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.shipping.chokepoint_volume(provider='imf')
-        >>> obb.economy.shipping.chokepoint_volume(provider='imf', chokepoint='suez_canal,panama_canal')
         """  # noqa: E501
 
         return self._run(
@@ -315,6 +313,12 @@ class ROUTER_economy_shipping(Container):
     @validate
     def port_info(
         self,
+        chart: Annotated[
+            bool,
+            OpenBBField(
+                description="Whether to create a chart or not, by default False."
+            ),
+        ] = False,
         provider: Annotated[
             Optional[Literal["imf"]],
             OpenBBField(
@@ -335,6 +339,8 @@ class ROUTER_economy_shipping(Container):
             Country to focus on. Enter as a 3-letter ISO country code. This parameter supersedes `continent` if both are provided. (provider: imf)
         limit : Optional[int]
             Limit the number of results returned. Limit is determined by the annual average number of vessels transiting through the port. If not provided, all ports are returned. (provider: imf)
+        chart : bool
+            Whether to create a chart or not, by default False.
 
         Returns
         -------
@@ -390,12 +396,6 @@ class ROUTER_economy_shipping(Container):
             Share of the total maritime imports of the country that are estimated to flow through the port. (provider: imf)
         share_country_maritime_export : Optional[float]
             Share of the total maritime exports of the country that are estimated to flow through the port. (provider: imf)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.economy.shipping.port_info(provider='imf')
-        >>> obb.economy.shipping.port_info(provider='imf', continent='asia_pacific')
         """  # noqa: E501
 
         return self._run(
@@ -410,6 +410,7 @@ class ROUTER_economy_shipping(Container):
                 },
                 standard_params={},
                 extra_params=kwargs,
+                chart=chart,
                 info={
                     "continent": {
                         "imf": {
@@ -637,7 +638,6 @@ class ROUTER_economy_shipping(Container):
                                     {"label": "Vanuatu", "value": "VUT"},
                                     {"label": "Venezuela", "value": "VEN"},
                                     {"label": "Vietnam", "value": "VNM"},
-                                    {"label": "World", "value": "WLD"},
                                     {"label": "Yemen", "value": "YEM"},
                                 ],
                                 "description": "Filter by country. This parameter supersedes `continent` if both are provided.",
@@ -682,7 +682,7 @@ class ROUTER_economy_shipping(Container):
         port_code : Optional[str]
             Port code to filter results by a specific port. This parameter is ignored if `country` parameter is provided. To get a list of available ports, use `obb.economy.shipping.port_info()`. Multiple comma separated items allowed. (provider: imf)
         country : Optional[Literal['ABW', 'AGO', 'AIA', 'ALB', 'ARE', 'ARG', 'ASM', 'ATG', 'AUS', 'AZE', 'BEL', 'BEN', 'BES', 'BGD', 'BGR', 'BHR', 'BHS', 'BLM', 'BLZ', 'BRA', 'BRB', 'BRN', 'CAN', 'CHL', 'CHN', 'CIV', 'CMR', 'COD', 'COG', 'COK', 'COL', 'COM', 'CPV', 'CRI', 'CUB', 'CUW', 'CYM', 'CYP', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'ECU', 'EGY', 'ERI', 'ESP', 'EST', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIB', 'GIN', 'GLP', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GTM', 'GUF', 'GUM', 'GUY', 'HKG', 'HND', 'HRV', 'HTI', 'IDN', 'IND', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KHM', 'KIR', 'KNA', 'KOR', 'KWT', 'LBN', 'LBR', 'LBY', 'LCA', 'LKA', 'LTU', 'LVA', 'MAC', 'MAF', 'MAR', 'MDA', 'MDG', 'MDV', 'MEX', 'MHL', 'MLT', 'MMR', 'MNE', 'MNP', 'MOZ', 'MRT', 'MSR', 'MTQ', 'MUS', 'MYS', 'MYT', 'NAM', 'NCL', 'NGA', 'NIC', 'NLD', 'NOR', 'NRU', 'NZL', 'OMN', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRT', 'PYF', 'QAT', 'REU', 'ROU', 'RUS', 'SAU', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SOM', 'STP', 'SUR', 'SVN', 'SWE', 'SXM', 'SYC', 'SYR', 'TCA', 'TGO', 'THA', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TWN', 'TZA', 'UKR', 'URY', 'USA', 'VCT', 'VEN', 'VGB', 'VIR', 'VNM', 'VUT', 'WSM', 'YEM', 'ZAF']]
-            Country to focus on. Enter as a 3-letter ISO country code. This parameter supersedes `continent` if both are provided. (provider: imf)
+            Country to focus on. Enter as a 3-letter ISO country code. This parameter is overridden by `port_code` if both are provided. (provider: imf)
 
         Returns
         -------
@@ -758,16 +758,6 @@ class ROUTER_economy_shipping(Container):
             Total export volume (in metric tons) of dry bulk carriers entering the port at this date. (provider: imf)
         exports_roro : Optional[float]
             Total export volume (in metric tons) of Ro-Ro ships entering the port at this date. (provider: imf)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> # Get average dwelling times and TEU volumes from the top ports.
-        >>> obb.economy.shipping.port_volume(provider='econdb')
-        >>> # Get daily port calls and estimated trading volumes for specific ports Get the list of available ports with `openbb shipping port_info`
-        >>> obb.economy.shipping.port_volume(provider='imf', port_code='rotterdam,singapore')
-        >>> # Get data for all ports in a specific country. Use the 3-letter ISO country code.
-        >>> obb.economy.shipping.port_volume(provider='imf', country='GBR')
         """  # noqa: E501
 
         return self._run(
@@ -5651,10 +5641,9 @@ class ROUTER_economy_shipping(Container):
                                     {"label": "Vanuatu", "value": "VUT"},
                                     {"label": "Venezuela", "value": "VEN"},
                                     {"label": "Vietnam", "value": "VNM"},
-                                    {"label": "World", "value": "WLD"},
                                     {"label": "Yemen", "value": "YEM"},
                                 ],
-                                "description": "Filter by country. This parameter supersedes `port_code` if both are provided.",
+                                "description": "Filter by country. This parameter is overridden by `port_code` if both are provided.",
                                 "style": {"popupWidth": 350},
                             }
                         }

@@ -81,11 +81,6 @@ class ROUTER_equity_shorts(Container):
             The price at the previous closing price from the settlement date.
         description : Optional[str]
             The description of the Security.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.shorts.fails_to_deliver(symbol='AAPL', provider='sec')
         """  # noqa: E501
 
         return self._run(
@@ -122,20 +117,20 @@ class ROUTER_equity_shorts(Container):
 
         Parameters
         ----------
+        provider : str
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: finra.
         symbol : str
             Symbol to get data for.
-        provider : Optional[Literal['finra']]
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: finra.
 
         Returns
         -------
         OBBject
-            results : List[EquityShortInterest]
+            results : list[EquityShortInterest]
                 Serializable results.
-            provider : Optional[Literal['finra']]
+            provider : Optional[str]
                 Provider name.
-            warnings : Optional[List[Warning_]]
-                List of warnings.
+            warnings : Optional[list[Warning_]]
+                list of warnings.
             chart : Optional[Chart]
                 Chart object.
             extra : Dict[str, Any]
@@ -163,11 +158,6 @@ class ROUTER_equity_shorts(Container):
             Change in Shares Short from Previous Cycle: Difference in short interest between the current cycle and the previous cycle.
         change_pct : float
             Change in Shares Short from Previous Cycle as a percent.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.shorts.short_interest(symbol='AAPL', provider='finra')
         """  # noqa: E501
 
         return self._run(
@@ -204,20 +194,20 @@ class ROUTER_equity_shorts(Container):
 
         Parameters
         ----------
+        provider : str
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: stockgrid.
         symbol : str
             Symbol to get data for.
-        provider : Optional[Literal['stockgrid']]
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: stockgrid.
 
         Returns
         -------
         OBBject
-            results : List[ShortVolume]
+            results : list[ShortVolume]
                 Serializable results.
-            provider : Optional[Literal['stockgrid']]
+            provider : Optional[str]
                 Provider name.
-            warnings : Optional[List[Warning_]]
-                List of warnings.
+            warnings : Optional[list[Warning_]]
+                list of warnings.
             chart : Optional[Chart]
                 Chart object.
             extra : Dict[str, Any]
@@ -239,11 +229,6 @@ class ROUTER_equity_shorts(Container):
             Closing price of the stock on the date. (provider: stockgrid)
         short_volume_percent : Optional[float]
             Percentage of the total volume that was short volume. (provider: stockgrid)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.shorts.short_volume(symbol='AAPL', provider='stockgrid')
         """  # noqa: E501
 
         return self._run(

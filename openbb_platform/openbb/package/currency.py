@@ -53,7 +53,7 @@ class ROUTER_currency(Container):
 
         Parameters
         ----------
-        provider : Optional[Literal['ecb']]
+        provider : str
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: ecb.
 
         Returns
@@ -61,10 +61,10 @@ class ROUTER_currency(Container):
         OBBject
             results : CurrencyReferenceRates
                 Serializable results.
-            provider : Optional[Literal['ecb']]
+            provider : Optional[str]
                 Provider name.
-            warnings : Optional[List[Warning_]]
-                List of warnings.
+            warnings : Optional[list[Warning_]]
+                list of warnings.
             chart : Optional[Chart]
                 Chart object.
             extra : Dict[str, Any]
@@ -136,11 +136,6 @@ class ROUTER_currency(Container):
             Thai Baht.
         ZAR : Optional[float]
             South African Rand.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.currency.reference_rates(provider='ecb')
         """  # noqa: E501
 
         return self._run(
@@ -236,15 +231,6 @@ class ROUTER_currency(Container):
             The date the reference data was last updated. (provider: polygon)
         delisted : Optional[date]
             The date the item was delisted. (provider: polygon)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.currency.search(provider='fmp')
-        >>> # Search for 'EUR' currency pair using 'intrinio' as provider.
-        >>> obb.currency.search(provider='intrinio', query='EUR')
-        >>> # Search for terms  using 'polygon' as provider.
-        >>> obb.currency.search(provider='polygon', query='EUR')
         """  # noqa: E501
 
         return self._run(
@@ -392,13 +378,6 @@ class ROUTER_currency(Container):
             The timestamp for the start of the most recent minute bar. (provider: polygon)
         last_updated : Optional[datetime]
             The last time the data was updated. (provider: polygon)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.currency.snapshots(provider='fmp')
-        >>> # Get exchange rates from USD and XAU to EUR, JPY, and GBP using 'fmp' as provider.
-        >>> obb.currency.snapshots(provider='fmp', base='USD,XAU', counter_currencies='EUR,JPY,GBP', quote_type='indirect')
         """  # noqa: E501
 
         return self._run(

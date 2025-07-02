@@ -37,6 +37,12 @@ class ROUTER_currency_price(Container):
             Union[datetime.date, None, str],
             OpenBBField(description="End date of the data, in YYYY-MM-DD format."),
         ] = None,
+        chart: Annotated[
+            bool,
+            OpenBBField(
+                description="Whether to create a chart or not, by default False."
+            ),
+        ] = False,
         provider: Annotated[
             Optional[Literal["fmp", "polygon", "tiingo", "yfinance"]],
             OpenBBField(
@@ -72,6 +78,8 @@ class ROUTER_currency_price(Container):
             Sort order of the data. This impacts the results in combination with the 'limit' parameter. The results are always returned in ascending order by date. (provider: polygon)
         limit : int
             The number of data entries to return. (provider: polygon)
+        chart : bool
+            Whether to create a chart or not, by default False.
 
         Returns
         -------
@@ -111,15 +119,6 @@ class ROUTER_currency_price(Container):
             Change in the price from the previous close, as a normalized percent. (provider: fmp)
         transactions : Optional[Annotated[int, Gt(gt=0)]]
             Number of transactions for the symbol in the time period. (provider: polygon)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.currency.price.historical(symbol='EURUSD', provider='fmp')
-        >>> # Filter historical data with specific start and end date.
-        >>> obb.currency.price.historical(symbol='EURUSD', start_date='2023-01-01', end_date='2023-12-31', provider='fmp')
-        >>> # Get data with different granularity.
-        >>> obb.currency.price.historical(symbol='EURUSD', provider='polygon', interval='15m')
         """  # noqa: E501
 
         return self._run(
@@ -138,6 +137,7 @@ class ROUTER_currency_price(Container):
                     "end_date": end_date,
                 },
                 extra_params=kwargs,
+                chart=chart,
                 info={
                     "symbol": {
                         "fmp": {"multiple_items_allowed": True, "choices": None},

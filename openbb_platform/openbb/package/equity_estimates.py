@@ -198,12 +198,6 @@ class ROUTER_equity_estimates(Container):
             A weighted average smart score over the last 3 years. (provider: benzinga)
         success_rate_3y : Optional[float]
             The percentage (normalized) of gain/loss ratings that resulted in a gain over the last 3 years (provider: benzinga)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.analyst_search(provider='benzinga')
-        >>> obb.equity.estimates.analyst_search(firm_name='Wedbush', provider='benzinga')
         """  # noqa: E501
 
         return self._run(
@@ -248,13 +242,13 @@ class ROUTER_equity_estimates(Container):
         symbol: Annotated[
             Union[str, None, list[Optional[str]]],
             OpenBBField(
-                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio, yfinance."
+                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio, tmx, yfinance."
             ),
         ] = None,
         provider: Annotated[
-            Optional[Literal["fmp", "intrinio", "yfinance"]],
+            Optional[Literal["fmp", "intrinio", "tmx", "yfinance"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, yfinance."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, tmx, yfinance."
             ),
         ] = None,
         **kwargs
@@ -264,9 +258,9 @@ class ROUTER_equity_estimates(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, yfinance.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, tmx, yfinance.
         symbol : Union[str, None, list[Optional[str]]]
-            Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio, yfinance.
+            Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio, tmx, yfinance.
         industry_group_number : Optional[int]
             The Zacks industry group number. (provider: intrinio)
 
@@ -310,6 +304,18 @@ class ROUTER_equity_estimates(Container):
             The date of the most recent estimate. (provider: intrinio)
         industry_group_number : Optional[int]
             The Zacks industry group number. (provider: intrinio)
+        target_upside : Optional[float]
+            Percent of upside, as a normalized percent. (provider: tmx)
+        total_analysts : Optional[int]
+            Total number of analyst. (provider: tmx)
+        buy_ratings : Optional[int]
+            Number of buy ratings. (provider: tmx)
+        sell_ratings : Optional[int]
+            Number of sell ratings. (provider: tmx)
+        hold_ratings : Optional[int]
+            Number of hold ratings. (provider: tmx)
+        consensus_action : Optional[str]
+            Consensus action. (provider: tmx)
         recommendation : Optional[str]
             Recommendation - buy, sell, etc. (provider: yfinance)
         recommendation_mean : Optional[float]
@@ -320,12 +326,6 @@ class ROUTER_equity_estimates(Container):
             Current price of the stock. (provider: yfinance)
         currency : Optional[str]
             Currency the stock is priced in. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.consensus(symbol='AAPL', provider='fmp')
-        >>> obb.equity.estimates.consensus(symbol='AAPL,MSFT', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -335,7 +335,7 @@ class ROUTER_equity_estimates(Container):
                     "provider": self._get_provider(
                         provider,
                         "equity.estimates.consensus",
-                        ("fmp", "intrinio", "yfinance"),
+                        ("fmp", "intrinio", "tmx", "yfinance"),
                     )
                 },
                 standard_params={
@@ -346,6 +346,7 @@ class ROUTER_equity_estimates(Container):
                     "symbol": {
                         "fmp": {"multiple_items_allowed": True, "choices": None},
                         "intrinio": {"multiple_items_allowed": True, "choices": None},
+                        "tmx": {"multiple_items_allowed": True, "choices": None},
                         "yfinance": {"multiple_items_allowed": True, "choices": None},
                     }
                 },
@@ -417,7 +418,7 @@ class ROUTER_equity_estimates(Container):
             Fiscal quarter for the estimate.
         calendar_year : Optional[int]
             Calendar year for the estimate.
-        calendar_period : Optional[Union[int, str]]
+        calendar_period : Optional[Union[str, int]]
             Calendar quarter for the estimate.
         low_estimate : Optional[int]
             The EBITDA estimate low for the period.
@@ -433,13 +434,6 @@ class ROUTER_equity_estimates(Container):
             Number of analysts providing estimates for the period.
         conensus_type : Optional[Literal['ebitda', 'ebit', 'enterprise_value', 'cash_flow_per_share', 'pretax_income']]
             The type of estimate. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.forward_ebitda(provider='intrinio')
-        >>> obb.equity.estimates.forward_ebitda(symbol='AAPL', fiscal_period='annual', provider='intrinio')
-        >>> obb.equity.estimates.forward_ebitda(symbol='AAPL,MSFT', fiscal_period='quarter', provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -472,13 +466,13 @@ class ROUTER_equity_estimates(Container):
         symbol: Annotated[
             Union[str, None, list[Optional[str]]],
             OpenBBField(
-                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio."
+                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio, seeking_alpha."
             ),
         ] = None,
         provider: Annotated[
-            Optional[Literal["fmp", "intrinio"]],
+            Optional[Literal["fmp", "intrinio", "seeking_alpha"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, seeking_alpha."
             ),
         ] = None,
         **kwargs
@@ -488,9 +482,9 @@ class ROUTER_equity_estimates(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: fmp, intrinio, seeking_alpha.
         symbol : Union[str, None, list[Optional[str]]]
-            Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio.
+            Symbol to get data for. Multiple comma separated items allowed for provider(s): fmp, intrinio, seeking_alpha.
         fiscal_period : str
             The future fiscal period to retrieve estimates for. (provider: fmp, intrinio)
             Choices for fmp: 'annual', 'quarter'
@@ -504,6 +498,8 @@ class ROUTER_equity_estimates(Container):
             The future calendar year to retrieve estimates for. When no symbol and year is supplied the current calendar year is used. (provider: intrinio)
         calendar_period : Optional[Literal['q1', 'q2', 'q3', 'q4']]
             The future calendar period to retrieve estimates for. (provider: intrinio)
+        period : Literal['annual', 'quarter']
+            The reporting period. (provider: seeking_alpha)
 
         Returns
         -------
@@ -557,12 +553,18 @@ class ROUTER_equity_estimates(Container):
             The mean estimate for the period two months ago. (provider: intrinio)
         mean_3m : Optional[float]
             The mean estimate for the period three months ago. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.forward_eps(symbol='AAPL', provider='intrinio')
-        >>> obb.equity.estimates.forward_eps(fiscal_year=2025, fiscal_period='fy', provider='intrinio')
+        normalized_actual : Optional[float]
+            Actual normalized EPS. (provider: seeking_alpha)
+        period_growth : Optional[float]
+            Estimated (or actual if reported) EPS growth for the period. (provider: seeking_alpha)
+        low_estimate_gaap : Optional[float]
+            Estimated GAAP EPS low for the period. (provider: seeking_alpha)
+        high_estimate_gaap : Optional[float]
+            Estimated GAAP EPS high for the period. (provider: seeking_alpha)
+        mean_gaap : Optional[float]
+            Estimated GAAP EPS mean for the period. (provider: seeking_alpha)
+        gaap_actual : Optional[float]
+            Actual GAAP EPS. (provider: seeking_alpha)
         """  # noqa: E501
 
         return self._run(
@@ -572,7 +574,7 @@ class ROUTER_equity_estimates(Container):
                     "provider": self._get_provider(
                         provider,
                         "equity.estimates.forward_eps",
-                        ("fmp", "intrinio"),
+                        ("fmp", "intrinio", "seeking_alpha"),
                     )
                 },
                 standard_params={
@@ -583,6 +585,10 @@ class ROUTER_equity_estimates(Container):
                     "symbol": {
                         "fmp": {"multiple_items_allowed": True, "choices": None},
                         "intrinio": {"multiple_items_allowed": True, "choices": None},
+                        "seeking_alpha": {
+                            "multiple_items_allowed": True,
+                            "choices": None,
+                        },
                     }
                 },
             )
@@ -651,12 +657,6 @@ class ROUTER_equity_estimates(Container):
             The latest trailing twelve months earnings per share. (provider: intrinio)
         last_updated : Optional[date]
             The date the data was last updated. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.forward_pe(provider='intrinio')
-        >>> obb.equity.estimates.forward_pe(symbol='AAPL,MSFT,GOOG', provider='intrinio')
         """  # noqa: E501
 
         return self._run(
@@ -688,13 +688,13 @@ class ROUTER_equity_estimates(Container):
         symbol: Annotated[
             Union[str, None, list[Optional[str]]],
             OpenBBField(
-                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): intrinio."
+                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): intrinio, seeking_alpha."
             ),
         ] = None,
         provider: Annotated[
-            Optional[Literal["intrinio"]],
+            Optional[Literal["intrinio", "seeking_alpha"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: intrinio."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: intrinio, seeking_alpha."
             ),
         ] = None,
         **kwargs
@@ -704,9 +704,9 @@ class ROUTER_equity_estimates(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: intrinio.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: intrinio, seeking_alpha.
         symbol : Union[str, None, list[Optional[str]]]
-            Symbol to get data for. Multiple comma separated items allowed for provider(s): intrinio.
+            Symbol to get data for. Multiple comma separated items allowed for provider(s): intrinio, seeking_alpha.
         fiscal_year : Optional[int]
             The future fiscal year to retrieve estimates for. When no symbol and year is supplied the current calendar year is used. (provider: intrinio)
         fiscal_period : Optional[Literal['fy', 'q1', 'q2', 'q3', 'q4']]
@@ -715,6 +715,8 @@ class ROUTER_equity_estimates(Container):
             The future calendar year to retrieve estimates for. When no symbol and year is supplied the current calendar year is used. (provider: intrinio)
         calendar_period : Optional[Literal['q1', 'q2', 'q3', 'q4']]
             The future calendar period to retrieve estimates for. (provider: intrinio)
+        period : Literal['annual', 'quarter']
+            The reporting period. (provider: seeking_alpha)
 
         Returns
         -------
@@ -776,12 +778,10 @@ class ROUTER_equity_estimates(Container):
             Number of revisions down in the last 3 months. (provider: intrinio)
         revisions_3m_change_percent : Optional[float]
             The analyst revisions percent change in estimate for the period of 3 months. (provider: intrinio)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.forward_sales(symbol='AAPL', provider='intrinio')
-        >>> obb.equity.estimates.forward_sales(fiscal_year=2025, fiscal_period='fy', provider='intrinio')
+        actual : Optional[int]
+            Actual sales (revenue) for the period. (provider: seeking_alpha)
+        period_growth : Optional[float]
+            Estimated (or actual if reported) EPS growth for the period. (provider: seeking_alpha)
         """  # noqa: E501
 
         return self._run(
@@ -791,7 +791,7 @@ class ROUTER_equity_estimates(Container):
                     "provider": self._get_provider(
                         provider,
                         "equity.estimates.forward_sales",
-                        ("intrinio",),
+                        ("intrinio", "seeking_alpha"),
                     )
                 },
                 standard_params={
@@ -800,7 +800,11 @@ class ROUTER_equity_estimates(Container):
                 extra_params=kwargs,
                 info={
                     "symbol": {
-                        "intrinio": {"multiple_items_allowed": True, "choices": None}
+                        "intrinio": {"multiple_items_allowed": True, "choices": None},
+                        "seeking_alpha": {
+                            "multiple_items_allowed": True,
+                            "choices": None,
+                        },
                     }
                 },
             )
@@ -897,11 +901,6 @@ class ROUTER_equity_estimates(Container):
             Number of analysts who estimated revenue.
         number_analysts_estimated_eps : Optional[int]
             Number of analysts who estimated EPS.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.historical(symbol='AAPL', provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -931,16 +930,16 @@ class ROUTER_equity_estimates(Container):
         symbol: Annotated[
             Union[str, None, list[Optional[str]]],
             OpenBBField(
-                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): benzinga, fmp."
+                description="Symbol to get data for. Multiple comma separated items allowed for provider(s): benzinga, finviz, fmp."
             ),
         ] = None,
         limit: Annotated[
             int, OpenBBField(description="The number of data entries to return.")
         ] = 200,
         provider: Annotated[
-            Optional[Literal["benzinga", "fmp"]],
+            Optional[Literal["benzinga", "finviz", "fmp"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: benzinga, fmp."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: benzinga, finviz, fmp."
             ),
         ] = None,
         **kwargs
@@ -950,9 +949,9 @@ class ROUTER_equity_estimates(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: benzinga, fmp.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: benzinga, finviz, fmp.
         symbol : Union[str, None, list[Optional[str]]]
-            Symbol to get data for. Multiple comma separated items allowed for provider(s): benzinga, fmp.
+            Symbol to get data for. Multiple comma separated items allowed for provider(s): benzinga, finviz, fmp.
         limit : int
             The number of data entries to return.
         page : Optional[int]
@@ -1042,6 +1041,10 @@ class ROUTER_equity_estimates(Container):
             Unique ID of this entry. (provider: benzinga)
         last_updated : Optional[datetime]
             Last updated timestamp, UTC. (provider: benzinga)
+        status : Optional[str]
+            The action taken by the firm. This could be 'Upgrade', 'Downgrade', 'Reiterated', etc. (provider: finviz)
+        rating_change : Optional[str]
+            The rating given by the analyst. This could be 'Buy', 'Sell', 'Underweight', etc. If the rating is a revision, the change is indicated by '->' (provider: finviz)
         news_url : Optional[str]
             News URL of the price target. (provider: fmp)
         news_title : Optional[str]
@@ -1050,13 +1053,6 @@ class ROUTER_equity_estimates(Container):
             News publisher of the price target. (provider: fmp)
         news_base_url : Optional[str]
             News base URL of the price target. (provider: fmp)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.estimates.price_target(provider='benzinga')
-        >>> # Get price targets for Microsoft using 'benzinga' as provider.
-        >>> obb.equity.estimates.price_target(start_date='2020-01-01', end_date='2024-02-16', limit=10, symbol='msft', provider='benzinga', action='downgrades')
         """  # noqa: E501
 
         return self._run(
@@ -1066,7 +1062,7 @@ class ROUTER_equity_estimates(Container):
                     "provider": self._get_provider(
                         provider,
                         "equity.estimates.price_target",
-                        ("benzinga", "fmp"),
+                        ("benzinga", "finviz", "fmp"),
                     )
                 },
                 standard_params={
@@ -1077,6 +1073,7 @@ class ROUTER_equity_estimates(Container):
                 info={
                     "symbol": {
                         "benzinga": {"multiple_items_allowed": True, "choices": None},
+                        "finviz": {"multiple_items_allowed": True, "choices": None},
                         "fmp": {"multiple_items_allowed": True, "choices": None},
                     },
                     "action": {

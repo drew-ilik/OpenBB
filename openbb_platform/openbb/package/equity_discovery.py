@@ -20,6 +20,7 @@ class ROUTER_equity_discovery(Container):
     growth_tech
     latest_financial_reports
     losers
+    top_retail
     undervalued_growth
     undervalued_large_caps
     """
@@ -124,12 +125,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.active(provider='yfinance')
-        >>> obb.equity.discovery.active(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -246,12 +241,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.aggressive_small_caps(provider='yfinance')
-        >>> obb.equity.discovery.aggressive_small_caps(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -351,13 +340,6 @@ class ROUTER_equity_discovery(Container):
             The form type of the filing
         link : str
             URL to the filing page on the SEC site.
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.filings(provider='fmp')
-        >>> # Get filings for the year 2023, limited to 100 results
-        >>> obb.equity.discovery.filings(start_date='2023-01-01', end_date='2023-12-31', limit=100, provider='fmp')
         """  # noqa: E501
 
         return self._run(
@@ -391,9 +373,9 @@ class ROUTER_equity_discovery(Container):
             ),
         ] = "desc",
         provider: Annotated[
-            Optional[Literal["yfinance"]],
+            Optional[Literal["tmx", "yfinance"]],
             OpenBBField(
-                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: yfinance."
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: tmx, yfinance."
             ),
         ] = None,
         **kwargs
@@ -403,9 +385,11 @@ class ROUTER_equity_discovery(Container):
         Parameters
         ----------
         provider : str
-            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: yfinance.
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: tmx, yfinance.
         sort : Literal['asc', 'desc']
             Sort order. Possible values: 'asc', 'desc'. Default: 'desc'.
+        category : Literal['dividend', 'energy', 'healthcare', 'industrials', 'price_performer', 'rising_stars', 'real_estate', 'tech', 'utilities', '52w_high', 'volume']
+            The category of list to retrieve. Defaults to `price_performer`. (provider: tmx)
         limit : Optional[int]
             Limit the number of results. (provider: yfinance)
 
@@ -437,6 +421,17 @@ class ROUTER_equity_discovery(Container):
             Percent change.
         volume : Union[int, float]
             The trading volume.
+        thirty_day_price_change : Optional[float]
+            30 Day Price Change. (provider: tmx)
+        ninety_day_price_change : Optional[float]
+            90 Day Price Change. (provider: tmx)
+        dividend_yield : Optional[float]
+            Dividend Yield. (provider: tmx);
+            Trailing twelve month dividend yield. (provider: yfinance)
+        avg_volume_10d : Optional[float]
+            10 Day Avg. Volume. (provider: tmx)
+        rank : Optional[int]
+            The rank of the stock in the list. (provider: tmx)
         open : Optional[float]
             Open price for the day. (provider: yfinance)
         high : Optional[float]
@@ -467,8 +462,6 @@ class ROUTER_equity_discovery(Container):
             Forward earnings per share. (provider: yfinance)
         pe_forward : Optional[float]
             Forward price-to-earnings ratio. (provider: yfinance)
-        dividend_yield : Optional[float]
-            Trailing twelve month dividend yield. (provider: yfinance)
         exchange : Optional[str]
             Exchange where the stock is listed. (provider: yfinance)
         exchange_timezone : Optional[str]
@@ -477,12 +470,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.gainers(provider='yfinance')
-        >>> obb.equity.discovery.gainers(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -492,13 +479,33 @@ class ROUTER_equity_discovery(Container):
                     "provider": self._get_provider(
                         provider,
                         "equity.discovery.gainers",
-                        ("yfinance",),
+                        ("tmx", "yfinance"),
                     )
                 },
                 standard_params={
                     "sort": sort,
                 },
                 extra_params=kwargs,
+                info={
+                    "category": {
+                        "tmx": {
+                            "multiple_items_allowed": False,
+                            "choices": [
+                                "dividend",
+                                "energy",
+                                "healthcare",
+                                "industrials",
+                                "price_performer",
+                                "rising_stars",
+                                "real_estate",
+                                "tech",
+                                "utilities",
+                                "52w_high",
+                                "volume",
+                            ],
+                        }
+                    }
+                },
             )
         )
 
@@ -599,12 +606,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.growth_tech(provider='yfinance')
-        >>> obb.equity.discovery.growth_tech(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -691,12 +692,6 @@ class ROUTER_equity_discovery(Container):
             URL to the MetaLinks.json file, if available. (provider: sec)
         financial_report : Optional[str]
             URL to the Financial_Report.xlsx file, if available. (provider: sec)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.latest_financial_reports(provider='sec')
-        >>> obb.equity.discovery.latest_financial_reports(provider='sec', date='2024-09-30')
         """  # noqa: E501
 
         return self._run(
@@ -832,12 +827,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.losers(provider='yfinance')
-        >>> obb.equity.discovery.losers(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -852,6 +841,77 @@ class ROUTER_equity_discovery(Container):
                 },
                 standard_params={
                     "sort": sort,
+                },
+                extra_params=kwargs,
+            )
+        )
+
+    @exception_handler
+    @validate
+    def top_retail(
+        self,
+        limit: Annotated[
+            int, OpenBBField(description="The number of data entries to return.")
+        ] = 5,
+        provider: Annotated[
+            Optional[Literal["nasdaq"]],
+            OpenBBField(
+                description="The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: nasdaq."
+            ),
+        ] = None,
+        **kwargs
+    ) -> OBBject:
+        """Track over $30B USD/day of individual investors trades.
+
+        It gives a daily view into retail activity and sentiment for over 9,500 US traded stocks,
+        ADRs, and ETPs.
+
+
+        Parameters
+        ----------
+        provider : str
+            The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: nasdaq.
+        limit : int
+            The number of data entries to return.
+
+        Returns
+        -------
+        OBBject
+            results : list[TopRetail]
+                Serializable results.
+            provider : Optional[str]
+                Provider name.
+            warnings : Optional[list[Warning_]]
+                list of warnings.
+            chart : Optional[Chart]
+                Chart object.
+            extra : Dict[str, Any]
+                Extra info.
+
+        TopRetail
+        ---------
+        date : date
+            The date of the data.
+        symbol : str
+            Symbol representing the entity requested in the data.
+        activity : float
+            Activity of the symbol.
+        sentiment : float
+            Sentiment of the symbol. 1 is bullish, -1 is bearish.
+        """  # noqa: E501
+
+        return self._run(
+            "/equity/discovery/top_retail",
+            **filter_inputs(
+                provider_choices={
+                    "provider": self._get_provider(
+                        provider,
+                        "equity.discovery.top_retail",
+                        ("nasdaq",),
+                    )
+                },
+                standard_params={
+                    "limit": limit,
                 },
                 extra_params=kwargs,
             )
@@ -954,12 +1014,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.undervalued_growth(provider='yfinance')
-        >>> obb.equity.discovery.undervalued_growth(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
@@ -1076,12 +1130,6 @@ class ROUTER_equity_discovery(Container):
             Most recent earnings date. (provider: yfinance)
         currency : Optional[str]
             Currency of the price data. (provider: yfinance)
-
-        Examples
-        --------
-        >>> from openbb import obb
-        >>> obb.equity.discovery.undervalued_large_caps(provider='yfinance')
-        >>> obb.equity.discovery.undervalued_large_caps(sort='desc', provider='yfinance')
         """  # noqa: E501
 
         return self._run(
