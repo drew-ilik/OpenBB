@@ -1212,10 +1212,6 @@ class ROUTER_equity_fundamental(Container):
             End date of the data, in YYYY-MM-DD format. (provider: intrinio, sec)
         thea_enabled : Optional[bool]
             Return filings that have been read by Intrinio's Thea NLP. (provider: intrinio)
-        year : Optional[int]
-            Calendar year of the data, default is current year. The earliest year available is 1994, for all companies and form types. (provider: nasdaq)
-        form_group : Literal['annual', 'quarterly', 'proxy', 'insider', '8k', 'registration', 'comment']
-            The form group to fetch, default is 8k. (provider: nasdaq)
         cik : Union[str, int, None]
             Lookup filings by Central Index Key (CIK) instead of by symbol. (provider: sec)
         use_cache : bool
@@ -1300,8 +1296,7 @@ class ROUTER_equity_fundamental(Container):
         is_xbrl : Optional[Union[str, int]]
             Whether the filing is an XBRL filing. (provider: sec)
         size : Optional[Union[str, int]]
-            The size of the filing. (provider: sec);
-            The file size of the PDF document. (provider: tmx)
+            The size of the filing. (provider: sec)
         complete_submission_url : Optional[str]
             The URL to the complete filing submission. (provider: sec)
         filing_detail_url : Optional[str]

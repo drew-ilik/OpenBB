@@ -2198,6 +2198,15 @@ class ROUTER_economy(Container):
         -------------
         content : Optional[Any]
             The content of request results. If `url` was provided, the content is a dictionary with keys `filename` and `content`. Otherwise, it is a list of dictionaries with a mapping of FOMC documents to URLs. The endpoint response will not be an OBBject.results object, but the content directly. (provider: federal_reserve)
+
+        Examples
+        --------
+        >>> from openbb import obb
+        >>> obb.economy.fomc_documents(provider='federal_reserve')
+        >>> # Filter all documents by year.
+        >>> obb.economy.fomc_documents(provider='federal_reserve', year=2022)
+        >>> # Filter all documents by year and document type.
+        >>> obb.economy.fomc_documents(provider='federal_reserve', year=2022, document_type='minutes')
         """  # noqa: E501
 
         return self._run(

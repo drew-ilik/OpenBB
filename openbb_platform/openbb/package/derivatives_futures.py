@@ -33,7 +33,7 @@ class ROUTER_derivatives_futures(Container):
             ),
         ],
         date: Annotated[
-            Union[datetime.date, str, None, list[Union[datetime.date, str, None]]],
+            Union[str, datetime.date, None, list[Union[str, datetime.date, None]]],
             OpenBBField(
                 description="A specific date to get data for. Multiple comma separated items allowed for provider(s): cboe, yfinance."
             ),
@@ -60,13 +60,8 @@ class ROUTER_derivatives_futures(Container):
             The provider to use, by default None. If None, the priority list configured in the settings is used. Default priority: cboe, deribit, yfinance.
         symbol : str
             Symbol to get data for.
-            Choices for deribit: 'BTC', 'ETH', 'PAXG'
-        date : Union[date, str, None, list[Union[date, str, None]]]
-            A specific date to get data for. Multiple comma separated items allowed for provider(s): cboe, yfinance.
-        hours_ago : Union[int, list[int], str, None]
-            Compare the current curve with the specified number of hours ago. Default is None. Multiple comma separated items allowed. (provider: deribit)
-        chart : bool
-            Whether to create a chart or not, by default False.
+        date : Union[str, date, None, list[Union[str, date, None]]]
+            A specific date to get data for. Multiple comma separated items allowed for provider(s): yfinance.
 
         Returns
         -------
