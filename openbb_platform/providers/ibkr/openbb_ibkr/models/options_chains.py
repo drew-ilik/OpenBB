@@ -3,17 +3,17 @@
 import asyncio
 import os
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
 
 from dotenv import load_dotenv
 from ib_async.contract import Option
+from openbb_core.app.model.abstract.error import OpenBBError
 from openbb_core.provider.abstract.annotated_result import AnnotatedResult
 from openbb_core.provider.abstract.fetcher import Fetcher
 from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsData,
     OptionsChainsQueryParams,
 )
-from openbb_core.provider.utils.errors import OpenBBError
 from openbb_ibkr.utils.connection import IBKRConnectionSingleton
 from openbb_ibkr.utils.helpers import normalize_result_data
 from pydantic import Field, field_validator
@@ -118,7 +118,7 @@ class IBKROptionsChainsFetcher(
     """IBKR Options Chains Fetcher."""
 
     @staticmethod
-    def transform_query(params: Dict[str, Any]) -> IBKROptionsChainsQueryParams:
+    def transform_query(params: dict[str, Any]) -> IBKROptionsChainsQueryParams:
         """Transforms the query"""
         return IBKROptionsChainsQueryParams(**params)
 
@@ -130,17 +130,17 @@ class IBKROptionsChainsFetcher(
 
     ibkr_connection = IBKRConnectionSingleton()
 
-    async def set_market_data_type(self):
+    def set_market_data_type(self):
         """
         Sets the market data type for the IBKR connection.
         Market data types: 1 for real-time, 2 for frozen, 3 for delayed, 4 for delayed frozen.
         """
-        await self.ibkr_connection.ib.reqMarketDataType(marketDataType=self.market_data_type)
+        self.ibkr_connection.ib.reqMarketDataType(marketDataType=self.market_data_type)
 
     @staticmethod
     async def aextract_data(
         query: IBKROptionsChainsQueryParams,
-        credentials: Optional[Dict[str, str]] = None,
+        credentials: dict[str, str] | None,
         **kwargs: Any,
     ) -> AnnotatedResult[IBKROptionsChainsData]:
         """Return the raw data from the IBKR connection."""
@@ -207,7 +207,7 @@ class IBKROptionsChainsFetcher(
 
             result_data = normalize_result_data(result_data)
 
-            metadata_data: Dict[str, Any] = {
+            metadata_data: dict[str, Any] = {
                 key: value
                 for key, value in ticker_data.items()
                 if key not in result_data

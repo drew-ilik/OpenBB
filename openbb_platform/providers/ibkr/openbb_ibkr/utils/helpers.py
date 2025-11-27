@@ -1,7 +1,7 @@
 """IBKR Provider Helpers"""
 import logging
 import math
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -37,7 +37,7 @@ def normalize_result_data(raw: dict[str, Any]) -> dict[str, list[Any]]:
         for k, v in raw.items()
     }
 
-def safe_getattr(obj: Any, attr: str, default: Optional[Any]=None) -> Any:
+def safe_getattr(obj: Any, attr: str, default: Any | None) -> Any:
     try:
         return getattr(obj, attr, default)
     except Exception:
