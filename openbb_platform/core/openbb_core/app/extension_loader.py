@@ -4,6 +4,7 @@ from enum import Enum
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any
 
+from fastapi import APIRouter, FastAPI
 from importlib_metadata import EntryPoint, EntryPoints, entry_points
 from openbb_core.app.model.abstract.singleton import SingletonMeta
 from openbb_core.app.model.extension import Extension
@@ -49,6 +50,23 @@ class ExtensionLoader(metaclass=SingletonMeta):
         self._obbject_objects: dict[str, Extension] = {}
         self._core_objects: dict[str, Router] = {}
         self._provider_objects: dict[str, Provider] = {}
+        self._on_command_output_callbacks: dict[str, list[Extension]] = {}
+        self._register_command_output_callbacks()
+
+    @property
+    def on_command_output_callbacks(self) -> dict[str, list[Extension]]:
+        """Return the on command output callbacks."""
+        return self._on_command_output_callbacks
+
+    def _register_command_output_callbacks(self) -> None:
+        """Register extensions that act on command output."""
+        for ext in self.obbject_objects.values():
+            if ext.on_command_output:
+                paths = ext.command_output_paths or ["*"]
+                for path in paths:
+                    if path not in self._on_command_output_callbacks:
+                        self._on_command_output_callbacks[path] = []
+                    self._on_command_output_callbacks[path].append(ext)
 
     @property
     def obbject_entry_points(self) -> EntryPoints:
@@ -147,9 +165,17 @@ class ExtensionLoader(metaclass=SingletonMeta):
             # pylint: disable=import-outside-toplevel
             from openbb_core.app.router import Router
 
-            return {
-                ep.name: entry for ep in eps if isinstance((entry := ep.load()), Router)
-            }
+            entries: dict[str, Router] = {}
+            for ep in eps:
+                entry = ep.load()
+                if isinstance(entry, Router):
+                    entries[ep.name] = entry
+                    continue
+                if isinstance(entry, FastAPI):
+                    entry = entry.router
+                if isinstance(entry, APIRouter):
+                    entries[ep.name] = Router.from_fastapi(entry)
+            return entries
 
         def load_provider(eps: EntryPoints) -> dict[str, "Provider"]:
             """
