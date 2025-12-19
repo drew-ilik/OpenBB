@@ -14,11 +14,15 @@ class FakeUpdateEvent:
     def connect(self, listener=None, **_):
         self._listener = listener
         if callable(self._listener):
+            # Call synchronously to avoid event loop scheduling races in tests
             try:
-                loop = asyncio.get_running_loop()
-            except RuntimeError:
-                loop = asyncio.get_event_loop()
-            loop.call_soon(self._listener, None)
+                self._listener(None)
+            except Exception:
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = asyncio.get_event_loop()
+                loop.call_soon(self._listener, None)
 
     def disconnect(self, listener=None, **_):
         self._listener = None

@@ -15,7 +15,7 @@ from openbb_core.provider.standard_models.options_chains import (
     OptionsChainsQueryParams,
 )
 from openbb_ibkr.utils.connection import IBKRConnectionSingleton
-from openbb_ibkr.utils.helpers import normalize_result_data
+from openbb_ibkr.utils.helpers import jsonable, normalize_result_data
 from pydantic import Field, field_validator
 
 load_dotenv()
@@ -137,6 +137,48 @@ class IBKROptionsChainsFetcher(
         """
         self.ibkr_connection.ib.reqMarketDataType(marketDataType=self.market_data_type)
 
+
+    @staticmethod
+    def build_result_and_metadata(query: IBKROptionsChainsQueryParams, ticker, ticker_data: dict[str, Any]) -> tuple[dict[str, list[Any]], dict[str, Any]]: # noqa: E501
+        """Build normalized result data and metadata from a ticker object.
+
+        This method extracts the mapping logic from the async fetcher so it can
+        be reused by a FastAPI shim or adapter in integration tests.
+        """
+        contract_obj = ticker_data.get("contract")
+
+        result_data = {
+            "underlying_symbol": query.symbol,
+            "contract_symbol": getattr(contract_obj, "symbol", None) if contract_obj else None,
+            "expiration": query.lastTradeDateOrContractMonth,
+            "strike": query.strike,
+            "option_type": query.right,
+            "bid": (ticker_data.get("bid")),
+            "ask": (ticker_data.get("ask")),
+            "last": (ticker_data.get("last")),
+            "implied_volatility": (ticker_data.get("impliedVolatility")),
+            "open_interest": (
+                ticker_data.get("callOpenInterest") if query.right == "C" else ticker_data.get("putOpenInterest")
+            ),
+            "volume": (
+                ticker_data.get("callVolume") if query.right == "C" else ticker_data.get("putVolume")
+            ),
+        }
+
+        result_data = normalize_result_data(result_data)
+
+        metadata_data: dict[str, Any] = {
+            key: value
+            for key, value in ticker_data.items()
+            if key not in result_data and jsonable(value)
+        }
+
+        for field, value in result_data.items():
+            if isinstance(value, list) and not value:
+                raise OpenBBError(f"Missing required data for field '{field}'.")
+
+        return result_data, metadata_data
+
     @staticmethod
     async def aextract_data(
         query: IBKROptionsChainsQueryParams,
@@ -185,42 +227,13 @@ class IBKROptionsChainsFetcher(
                 if not attr.startswith("_") and not callable(getattr(ticker, attr, None))
             }
 
-            contract_obj = ticker_data.get("contract")
-
-            result_data = {
-                "underlying_symbol": query.symbol,
-                "contract_symbol": getattr(contract_obj, "symbol", None) if contract_obj else None,
-                "expiration": query.lastTradeDateOrContractMonth,
-                "strike": query.strike,
-                "option_type": query.right,
-                "bid": (ticker_data.get("bid")),
-                "ask": (ticker_data.get("ask")),
-                "last": (ticker_data.get("last")),
-                "implied_volatility": (ticker_data.get("impliedVolatility")),
-                "open_interest": (
-                    ticker_data.get("callOpenInterest") if query.right == "C" else ticker_data.get("putOpenInterest")
-                ),
-                "volume": (
-                    ticker_data.get("callVolume") if query.right == "C" else ticker_data.get("putVolume")
-                ),
-            }
-
-            result_data = normalize_result_data(result_data)
-
-            metadata_data: dict[str, Any] = {
-                key: value
-                for key, value in ticker_data.items()
-                if key not in result_data
-            }
-
-            for field, value in result_data.items():
-                if isinstance(value, list) and not value:
-                    raise OpenBBError(f"Missing required data for field '{field}'.")
-
+            result_data, metadata_data = IBKROptionsChainsFetcher.build_result_and_metadata(
+                query, ticker, ticker_data
+            )
 
             return AnnotatedResult(
                 result=IBKROptionsChainsData(**result_data),
-                metadata=metadata_data
+                metadata=metadata_data,
             )
 
         except Exception as e:

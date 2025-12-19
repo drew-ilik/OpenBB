@@ -20,6 +20,9 @@ def is_live_account(account_mode: str) -> bool:
     """Check if the current account mode is live or paper."""
     return account_mode == "live"
 
+def jsonable(v):
+    return v is None or isinstance(v, (str, int, float, bool, list, dict))
+
 def normalize_result_data(raw: dict[str, Any]) -> dict[str, list[Any]]:
     """Normalize raw ticker data for use in OpenBB fetchers."""
 
